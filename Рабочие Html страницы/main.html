@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<textarea cols="30" rows="10" id = 'TA'></textarea>
+
+<button onclick="start()">Отправить</button>
+
+<div id="par"></div>
+
+</body>
+    <script>
+
+            let xhr = new XMLHttpRequest();
+
+            function start () {
+                let TA = document.getElementById('TA').value;
+                console.log(TA);
+
+                xhr.open('POST', 'http://192.168.0.105:1337/main', true);
+                xhr.send(TA);
+
+                xhr.onload = function () {
+                    let par = document.getElementById('par');
+                   let div = document.createElement('div');
+                    div = xhr.responseText;
+                    par.append(div);
+               }
+        }
+
+
+    </script>
+</html>

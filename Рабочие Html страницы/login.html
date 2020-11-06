@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+        <p>
+            <input type="login" id="NickName">
+        </p>
+
+        <p>
+            <input type="password" id="Password">
+        </p>
+
+        <button type="submit" onclick="start()" id="send">Войти</button>
+
+</body>
+    <script>
+        let xhr = new XMLHttpRequest();
+
+        function start () {
+            let pass = document.getElementById('Password').value;
+            let NickName = document.getElementById('NickName').value;
+
+            let sending = '{' + NickName +  ',' + pass + '}';
+
+            xhr.open('POST', 'http://192.168.0.105:1337/login', true);
+            xhr.send(sending);
+            console.log(sending)
+        }
+
+            xhr.onload = function () {
+                if (xhr.responseText === '203') {
+                    alert('Вы вошли!');
+                    window.location.href = '/main';
+                } else if(xhr.responseText === '204') {
+                    alert('Такого пользователя нет!')
+                    window.location.href = '/text'
+                }
+            }
+    </script>
+</html>
