@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>main</title>
+</head>
+<body>
+    <p>
+        <textarea  id="tA" cols="30" rows="10"></textarea>
+    </p>
+    <p>
+        <button onclick="start()">Отправить сообщение!</button>
+    </p>
+    <div id="par"></div>
+</body>
+
+    <script>
+        let xhr = new XMLHttpRequest();
+
+        function start () {
+            let tA = document.getElementById('tA').value;
+            let par = document.getElementById('par');
+
+            xhr.open('POST', 'http://10.1.0.48:1337/main');
+            xhr.send(tA);
+
+            xhr.onload = function () {
+                console.log(xhr.responseText);
+                // resT = xhr.responseText;
+                // par.append(resT);
+            }
+
+            let resT = document.createElement('div');
+
+
+        }
+    </script>
+
+</html>

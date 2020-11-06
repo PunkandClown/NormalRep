@@ -14,10 +14,10 @@ public class HashmapClass {
             throws IOException {
         if(PersonBase.containsKey(Nickname)){
             System.out.println("Такой ник уже есть");
-            MyHttpHandler.handleCodeResponse(httpExchange,"203");
+            MyHttpHandler.handleCodeResponse(httpExchange,"204");
         } else {
             PersonBase.put(Nickname, new fab().Fabm( Nickname,Name,Password));
-            MyHttpHandler.handleCodeResponse(httpExchange,"204");
+            MyHttpHandler.handleCodeResponse(httpExchange,"203");
         }
 }
 

@@ -10,11 +10,12 @@ import java.util.StringTokenizer;
 
 public class MyHttpHandler implements HttpHandler {
 
-    public String  index = "E:\\Рабочие Html страницы\\index.html";
-    public static String  Log = "E:\\Рабочие Html страницы\\login.html";
-    public static String  main = "E:\\Рабочие Html страницы\\main.html";
+    public String  index = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
+    public static String  Log = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
+    public static String  main = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
     public static Boolean Accx = false;
     @Override
+
     public void handle(HttpExchange httpExchange) throws IOException {
         String url = httpExchange.getHttpContext().getPath();
         boolean AccAvt = false;
@@ -47,6 +48,11 @@ public class MyHttpHandler implements HttpHandler {
                 } else if("POST".equals(httpExchange.getRequestMethod())) {
                     System.out.println("ВВеденное сообщение:");
                     System.out.println(handleloginReq(httpExchange));
+
+                    String mess = handleloginReq(httpExchange);
+                    MyHttpHandler.MessAnsver(httpExchange, mess);
+
+
                 }
             } else {
                 MyHttpHandler.handleResponse(httpExchange, Log);
@@ -69,6 +75,17 @@ public class MyHttpHandler implements HttpHandler {
         }
         return false;
     }
+    public static void MessAnsver(HttpExchange httpExchange, String resp) throws IOException {
+        OutputStream outputStream = httpExchange.getResponseBody();
+        byte[] arrayss = resp.getBytes();
+        httpExchange.sendResponseHeaders(200, arrayss.length);
+        outputStream.write(arrayss);
+        outputStream.flush();
+        outputStream.close();
+        System.out.println("Конец отправки: " + resp);
+    }
+
+
 
     public static void handleResponse(HttpExchange httpExchange, String index)  throws IOException {
         OutputStream outputStream = httpExchange.getResponseBody();

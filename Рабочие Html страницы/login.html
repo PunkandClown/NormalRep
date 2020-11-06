@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <p>
+        <label for="NN">Введите логин</label>
+            <input type="name" id="NN">
+    </p>
+
+    <p>
+        <label for="pass">Введите пароль</label>
+            <input type="password" id="pass">
+    </p>
+
+    <button onclick="start()">Войти</button>
+</body>
+    <script>
+
+        let xhr = new XMLHttpRequest();
+
+        function start () {
+
+            let NN = document.getElementById('NN').value;
+            let pass = document.getElementById('pass').value;
+
+            let sending = '{' + NN + ',' + pass + '}';
+
+
+            xhr.open('POST', 'http://10.1.0.48:1337/login');
+
+            xhr.send(sending)
+
+            xhr.onload = function () {
+                if (xhr.responseText === '203') {
+                    alert('Вы вошли!');
+                    window.location.href = '/main';
+                } else {
+                    alert('Логин или пароль не верный, попробуйте снова!');
+                }
+            }            
+        }
+    </script>
+</html>
