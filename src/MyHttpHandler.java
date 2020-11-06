@@ -13,7 +13,7 @@ public class MyHttpHandler implements HttpHandler {
     public String  index = "E:\\Рабочие Html страницы\\index.html";
     public static String  Log = "E:\\Рабочие Html страницы\\login.html";
     public static String  main = "E:\\Рабочие Html страницы\\main.html";
-    //public static Boolean Accx = false;
+    public static Boolean Accx = false;
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         String url = httpExchange.getHttpContext().getPath();
