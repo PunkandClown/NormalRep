@@ -46,13 +46,7 @@ public class MyHttpHandler implements HttpHandler {
                 if("GET".equals(httpExchange.getRequestMethod())) {
                     MyHttpHandler.handleResponse(httpExchange, main);
                 } else if("POST".equals(httpExchange.getRequestMethod())) {
-                    System.out.println("ВВеденное сообщение:");
-                    System.out.println(handleloginReq(httpExchange));
-
-                    String mess = handleloginReq(httpExchange);
-                    MyHttpHandler.MessAnsver(httpExchange, mess);
-
-
+                    MyHttpHandler.handleCodeResponse(httpExchange,handleloginReq(httpExchange));
                 }
             } else {
                 MyHttpHandler.handleResponse(httpExchange, Log);

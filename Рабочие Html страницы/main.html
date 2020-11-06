@@ -18,21 +18,22 @@
         let xhr = new XMLHttpRequest();
 
         function start () {
-            let tA = document.getElementById('tA').value;
+            let tA = 'mess:' + document.getElementById('tA').value;
             let par = document.getElementById('par');
+
+            console.log(tA);
 
             xhr.open('POST', 'http://10.1.0.48:1337/main');
             xhr.send(tA);
 
-            xhr.onload = function () {
-                console.log(xhr.responseText);
-                // resT = xhr.responseText;
-                // par.append(resT);
-            }
-
             let resT = document.createElement('div');
 
-
+            xhr.onload = function () {
+                console.log(xhr.responseText);
+                let a =  xhr.responseText.split(':');
+                resT.innerText = a[1];
+                par.append(resT);
+            }
         }
     </script>
 
