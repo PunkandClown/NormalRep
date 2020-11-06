@@ -18,7 +18,6 @@ public class MyHttpHandler implements HttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         String url = httpExchange.getHttpContext().getPath();
         boolean AccAvt = false;
-        String sd = "sdfsdf";
 
         switch (url){
         case "/text":
