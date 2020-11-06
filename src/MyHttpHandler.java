@@ -108,6 +108,7 @@ public class MyHttpHandler implements HttpHandler {
             String Nam = st.nextToken().trim();
             String pas = st.nextToken().trim();
         HashmapClass.base(Nick,Nam,pas, httpExchange);
+
         System.out.println("Ввод в Хеш аккаунта:" +"{"+  Nick +" " + Nam +" "+ pas+"}");
         bufferedReader.close();
     }
