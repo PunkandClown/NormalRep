@@ -1,6 +1,8 @@
 import com.sun.net.httpserver.HttpServer;
         import java.io.IOException;
         import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class HttpServer2 {
     public static void main(String[] arg) throws IOException {
@@ -8,6 +10,8 @@ public class HttpServer2 {
         server.createContext("/text", new  MyHttpHandler());
         server.createContext("/login", new  MyHttpHandler());
         server.createContext("/main", new  MyHttpHandler());
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        server.setExecutor(threadPoolExecutor);
         server.start();
     }
 
