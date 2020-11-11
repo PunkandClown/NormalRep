@@ -28,19 +28,18 @@
 
             let sending = '{' + NN + ',' + pass + '}';
 
-
             xhr.open('POST', 'http://10.1.0.48:1337/login');
 
-            xhr.send(sending)
+            xhr.send(sending);
 
             xhr.onload = function () {
-                if (xhr.responseText === '203') {
+                if (xhr.status === 202) {
                     alert('Вы вошли!');
                     window.location.href = '/main';
                 } else {
                     alert('Логин или пароль не верный, попробуйте снова!');
                 }
-            }            
+            }
         }
     </script>
 </html>

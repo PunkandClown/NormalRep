@@ -64,12 +64,14 @@
             xhr.send(sending)
 
             xhr.onload = function () {
-                if (xhr.responseText === '203') {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+                if (xhr.status === 200) {
                     alert('Регистрация прошла успешна!');
                     window.location.href = '/login';
                 } else {
                     alert('Такой пользователь уже есть!');
-                    window.location.href = '/login';
+                    window.location.href = '/text';
                 }
             }
             

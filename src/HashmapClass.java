@@ -17,7 +17,7 @@ public class HashmapClass {
             MyHttpHandler.handleCodeResponse(httpExchange,"203");
         } else {
             PersonBase.put(Nickname, new fab().Fabm( Nickname,Name,Password));
-            MyHttpHandler.handleCodeResponse(httpExchange,"204");
+            MyHttpHandler.handleCodeResponse(httpExchange,"202");
         }
     }
     public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
