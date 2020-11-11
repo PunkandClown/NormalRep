@@ -50,8 +50,9 @@ public class MyHttpHandler implements HttpHandler {
                 if ("GET".equals(RequestMeth)) {
                         if (AllMessage.size() == 0) {
                             handleResponse(httpExchange, main, 200);
+                        } else {
+                            handleCodeResponse(httpExchange,MyHttpHandler.SBAllMessage(AllMessage));
                         }
-                        handleCodeResponse(httpExchange,MyHttpHandler.SBAllMessage(AllMessage));
                 } else if ("POST".equals(RequestMeth)) {
                     Message message = new Message(HashmapClass.getKeyByValue(HashmapClass.NickAndCookie, Cookie), date, BufferInGetRequestBody(httpExchange));
                     AllMessage.put(keymessage, message);
@@ -65,7 +66,9 @@ public class MyHttpHandler implements HttpHandler {
                     keymessage++;
 
                 }
-            } MyHttpHandler.handleResponse(httpExchange, main, 200);
+            } else  {
+                MyHttpHandler.handleResponse(httpExchange, login, 200);
+            }
             break;
         default:
             MyHttpHandler.handleResponse(httpExchange, login, 200);

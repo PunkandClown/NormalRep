@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<script>
-
-</script>
-
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
 </head>
 <body>
-<textarea id="TA" cols="30" rows="40"></textarea>
-<input type="submit" value="Send">
+<textarea id="TA" cols="50" rows="10"></textarea>
+<input onclick="start()" type="submit" value="Send">
 <div id="subscribe">
 </div>
 </body>
+<script>
+    let xhr = new XMLHttpRequest();
+
+    function start () {
+        let TA = document.getElementById('TA').value;
+        xhr.open('POST', 'http://10.1.0.48:1337/main');
+
+        xhr.send(TA);
+        console.log(xhr.response);
+
+        xhr.onload = function () {
+            console.log(xhr.response);
+        }
+    }
+</script>
 </html>
