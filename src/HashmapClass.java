@@ -10,16 +10,16 @@ public class HashmapClass {
     public static HashMap<String, String> NickAndCookie = new HashMap<>();
 
 
-    public static void base(String Nickname, String Name, String Password, HttpExchange httpExchange)
-            throws IOException {
+    public static boolean base(String Nickname, String Name, String Password, HttpExchange httpExchange) throws IOException {
         if(PersonBase.containsKey(Nickname)){
             System.out.println("Такой ник уже есть");
-            MyHttpHandler.handleCodeResponse(httpExchange,"203");
+            return false;
         } else {
             PersonBase.put(Nickname, new fab().Fabm( Nickname,Name,Password));
-            MyHttpHandler.handleCodeResponse(httpExchange,"202");
+            return true;
         }
     }
+
     public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
         for (Map.Entry<T, E> entry : map.entrySet()) {
             if (Objects.equals(value, entry.getValue())) {

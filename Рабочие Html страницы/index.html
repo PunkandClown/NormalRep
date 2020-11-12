@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <link href="http://192.168.0.105:1337/CSS" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="reg">
@@ -27,26 +27,6 @@
                 </div>    
         </div>
     </div>
-
-<style>
-    .reg {
-        font-family: 'Orbitron', sans-serif;
-        width: 220px;
-        height: 230px;
-        margin: 0 auto;
-        background-image: url(https://i.gifer.com/9lZ7.gif);
-    }
-
-    .form {
-        margin-left: 17px;
-        margin-top: -10px;
-    }
-
-    .sub {
-        margin-left: 19px;
-    }
-</style>
-
 </body>
     <script>
         let xhr = new XMLHttpRequest();
@@ -57,7 +37,7 @@
             let pass = document.getElementById('pass').value;
 
 
-            xhr.open('POST', 'http://10.1.0.48:1337/text');
+            xhr.open('POST', 'http://192.168.0.105:1337/text');
 
             let sending = '{' + name + ',' + NN + ',' + pass + '}';
 
@@ -71,7 +51,7 @@
                     window.location.href = '/login';
                 } else {
                     alert('Такой пользователь уже есть!');
-                    window.location.href = '/text';
+                    window.location.href = '/login';
                 }
             }
             

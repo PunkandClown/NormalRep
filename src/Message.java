@@ -12,6 +12,6 @@ public class Message {
     }
 
     public String toString(){
-        return  "{ " + Name + " , " + Data + " , " + TextMess + " }";
+        return  "{\n" + "\"" + "Name" + "\": " + "\"" + Name + "\"" + ",\n" + "\"" + "Data" + "\": " + "\"" + Data + "\"" + ",\n" + "\"" + "TextMessage"+ "\": " + "\"" + TextMess + "\".\n" + "}";
     }
 }
