@@ -2,27 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
 </head>
 <body>
-<textarea id="TA" cols="50" rows="10"></textarea>
-<input onclick="start()" type="submit" value="Send">
-<div id="subscribe">
+<form action="">
+    <textarea name="mess" id="messT" cols="30" rows="10"></textarea>
+    <button onclick="send()" id="btnst"></button>
+</form>
+
+<div  class="chatBox">
 </div>
+
 </body>
+
 <script>
-    let xhr = new XMLHttpRequest();
+    const url = 'http://10.1.0.48:1337/main'
+    let messT = document.getElementById('messT').value;
 
-    function start () {
-        let TA = document.getElementById('TA').value;
-        xhr.open('POST', 'http://192.168.0.105:1337/main');
+    function send(){
 
-        xhr.send(TA);
-        console.log(xhr.response);
+    }
 
-        xhr.onload = function () {
-            console.log(xhr.response);
+    async function getResponse  ()  {
+        let response = await fetch(url, {
+            method: 'POST',
+            body: messT
+        });
+        console.log(messT);
+        let content = await response.json();
+        content = content.splice(0, 8);
+
+        let list = document.querySelectorAll('.chatBox');
+
+        let key;
+
+        for (key in content) {
+            list.innerHTML += `
+                    <li>
+                        <h4>${content[key].Name} </h4>
+                        // <h4>${content[key].Data}</h4>
+                        // <p>${content[key].TextMessage}</p>
+                    </li>
+                `
         }
     }
+
 </script>
 </html>

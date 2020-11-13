@@ -10,17 +10,19 @@ import java.util.*;
 
 public class MyHttpHandler implements HttpHandler {
     public static int keymessage = 0;
-    public String  index = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
-    public static String login = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
-    public static String  main = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
-    public static String indexCSS = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\indexCSS.css";
-//    public String  index = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
-//    public static String login = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
-//    public static String  main = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
+//    public String  index = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
+//    public static String login = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
+//    public static String  main = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
+
+    public static String indexCSS = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\indexCSS.css";
+    public String  index = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
+    public static String login = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
+    public static String  main = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
 
     public static Map<Integer, Message> AllMessage = new HashMap<>();
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
+        System.getProperty("mk.dir");
         LocalDateTime localitytime = LocalDateTime.now();
         String url = httpExchange.getHttpContext().getPath();
         String RequestMeth = httpExchange.getRequestMethod();
@@ -55,9 +57,6 @@ public class MyHttpHandler implements HttpHandler {
         handleOutputStream(httpExchange, arrayss);
         System.out.println("Конец отправки: " + index);
     }
-
-
-
     public static void handleResponse(HttpExchange httpExchange, String index, int codeHeader)  throws IOException {
         byte[] arrayss = Files.readAllBytes(Paths.get(index));
         httpExchange.sendResponseHeaders(codeHeader, arrayss.length);
@@ -172,6 +171,7 @@ public class MyHttpHandler implements HttpHandler {
             SB.append(ParseMessage);
         }
         SB.append("\n]");
+        System.out.println(SB.toString());
         return SB.toString();
     }
     public static void handleResponseForMessage(HttpExchange httpExchange, String numb)  throws IOException {
