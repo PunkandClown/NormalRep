@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<body>
+    <form action="">
+        <textarea name="mess" id="messT" cols="30" rows="10"></textarea>
+      <button></button>
+    </form>
+
+    <div id="btnst" class="chatBox">
+    </div>
+
+</body>
+
+    <script>
+         let url = 'http://10.1.0.48:1337/main'
+
+         let btnst = document.getElementById('btnst');
+         btnst.addEventListener('click') = async getResponse =>() => {
+            let response = await fetch(url);
+
+            let content = await response.json();
+            content = content.splice(0, 8);
+
+            let list = document.querySelectorAll('.chatBox');
+
+            let key;
+
+            for (key in content) {
+                list.innerHTML += `
+                    <li> 
+                        <h4>${content[key].name + content[key].time}</h4>
+                    </li>
+                `
+            }
+        }
+
+        ва
+        в
+        а
+        в
+        
+        // демка для паши 
+    </script>
+
+</html>
