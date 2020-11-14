@@ -18,7 +18,7 @@
 
     <script>
         const url = 'http://10.1.0.48:1337/main'; //Поставь свой IP4
-        const list = document.getElementById('btnst')
+        const list = document.getElementById('btnst');
 
         let xhr = new XMLHttpRequest();
 
@@ -27,11 +27,10 @@
             xhr. open('POST', url);
 
 
-
             xhr.onload = function () {
                 let content = JSON.parse(xhr.response);
                 content = content.splice(0, 8);
-                
+
                 let key;
 
                 for (key in content) {
