@@ -8,7 +8,7 @@
 <body>
     <form action="">
         <textarea name="mess" id="messT" cols="30" rows="10"></textarea>
-      <button></button>
+      <button onclick="sending()"></button>
     </form>
 
     <div id="btnst" class="chatBox">
@@ -17,34 +17,38 @@
 </body>
 
     <script>
-         let url = 'http://10.1.0.48:1337/main'
-
-         let btnst = document.getElementById('btnst');
-         btnst.addEventListener('click') = async getResponse =>() => {
-            let response = await fetch(url);
-
-            let content = await response.json();
-            content = content.splice(0, 8);
-
-            let list = document.querySelectorAll('.chatBox');
-
-            let key;
-
-            for (key in content) {
-                list.innerHTML += `
-                    <li> 
-                        <h4>${content[key].name + content[key].time}</h4>
-                    </li>
-                `
-            }
-        }
-
-        ва
-        в
-        а
-        в
+         const url = 'http://10.1.0.48:1337/main'; //Поставь свой IP4
         
-        // демка для паши 
-    </script>
 
+         function sending () {
+            let messT = document.getElementById('messT').value;
+
+             fetch(url, {
+                 method: 'POST',
+                 body: messT
+             }).then(response => response.body)
+             .then(response => getResponse(response));
+         }
+
+            async function getResponse (response) {
+                let response = await fetch(url);
+
+                let content = await response.json();
+                content = content.splice(0, 8);
+
+                let list = document.querySelectorAll('.chatBox');
+
+                let key;
+
+                for (key in content) {
+                    list.innerHTML += `
+                        <li> 
+                            <h4>${content[key].Name + content[key].Data}</h4>
+                            <p>${content[key].mess}</p> 
+                        </li>
+                    `
+                }// Исправь ID в теге <p> тк я не знаю под каким ключом идет сообщение(Вместо .mess свое)
+            }
+
+    </script>
 </html>
