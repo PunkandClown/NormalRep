@@ -6,10 +6,9 @@
     <title>Chat</title>
 </head>
 <body>
-    <form action="">
-        <textarea name="mess" id="messT" cols="30" rows="10"></textarea>
-      <button onclick="sending()"></button>
-    </form>
+
+        <textarea id="messT" cols="30" rows="10"></textarea>
+        <button onclick="sending()"></button>
 
     <div id="btnst" class="chatBox">
     </div>
@@ -17,29 +16,32 @@
 </body>
 
     <script>
-        const url = 'http://10.1.0.48:1337/main'; //Поставь свой IP4
         const list = document.getElementById('btnst');
 
         let xhr = new XMLHttpRequest();
 
         function sending() {
             let messT = document.getElementById('messT').value;
-            xhr. open('POST', url);
+            xhr.open('POST', 'http://10.1.0.48:1337/main'); // как обычно свой ip я убрал переменную
 
+            console.log(messT); //вывожу данные из поля в консоль
 
             xhr.onload = function () {
                 let content = JSON.parse(xhr.response);
                 content = content.splice(0, 8);
 
+                console.log(content); //вывожу в консоль что приходит от сервера 
+                console.log(JSON.stringify(content)); // Проверка приходит ли JSON ОТ сервера
                 let key;
 
                 for (key in content) {
                     list.innerHTML += `
                         <li> 
-                            <h4>${content[key].Name + content[key].Data}</h4>
+                            <h4>${content[key].Name}</h4>
+                            <h5>${content[key].Data}</h5>
                             <p>${content[key].mess}</p> 
                         </li>
-                    `
+                    ` // Опять исправь ключи JSON
                 }
             }
             xhr.send(messT);
