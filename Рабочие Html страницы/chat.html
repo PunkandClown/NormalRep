@@ -15,6 +15,7 @@
 
 </body>
 
+    
     <script>
         const list = document.getElementById('btnst');
 
@@ -26,56 +27,40 @@
 
             console.log(messT); //вывожу данные из поля в консоль
 
-            xhr.onload = function () {
+            xhr.onload = function messOn () {
                 let content = JSON.parse(xhr.response);
                 content = content.splice(0, 8);
 
                 console.log(content); //вывожу в консоль что приходит от сервера 
                 console.log(JSON.stringify(content)); // Проверка приходит ли JSON ОТ сервера
-                let key;
-
-                for (key in content) {
-                    list.innerHTML += `
+               
+                    list.innerHTML =`
                         <li> 
                             <h4>${content[key].Name}</h4>
                             <h5>${content[key].Data}</h5>
-                            <p>${content[key].mess}</p> 
+                            <p>${content[key].TextMessage}</p> 
                         </li>
                     ` // Опять исправь ключи JSON
-                }
+                
             }
             xhr.send(messT);
         }
-
-
-        //  function sending () {
-
-        //      return fetch(url, {
-        //          method: 'POST',
-        //          body: messT
-        //      }).then(response => response.messT)
-        //      .then(response => getResponse(response));
-        //  }
-
-        //     async function getResponse (response) {
-        //         let response = await fetch(url);
-
-        //         let content = await response.json();
-        //         content = content.splice(0, 8);
-
-        //         let list = document.querySelectorAll('.chatBox');
-
-        //         let key;
-
-        //         for (key in content) {
-        //             list.innerHTML += `
-        //                 <li> 
-        //                     <h4>${content[key].Name + content[key].Data}</h4>
-        //                     <p>${content[key].mess}</p> 
-        //                 </li>
-        //             `
-        //         }// Исправь ID в теге <p> тк я не знаю под каким ключом идет сообщение(Вместо .mess свое)
-        //     }
-// 
     </script>
+
+<script>
+    document.body.onload = function dowl(){
+        let key;
+
+        for (key in content) {
+            list.innerHTML +=`
+                        <li> 
+                            <h4>${content[key].Name}</h4>
+                            <h5>${content[key].Data}</h5>
+                            <p>${content[key].TextMessage}</p> 
+                        </li>
+                        `
+        }
+    }
+</script>
+
 </html>
