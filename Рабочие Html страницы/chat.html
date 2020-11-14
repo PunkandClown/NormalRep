@@ -17,27 +17,21 @@
 </body>
 
     <script>
-         const url = 'http://10.1.0.48:1337/main'; //Поставь свой IP4
-        
+        const url = 'http://10.1.0.48:1337/main'; //Поставь свой IP4
+        const list = document.getElementById('btnst')
 
-         function sending () {
+        let xhr = new XMLHttpRequest();
+
+        function sending() {
             let messT = document.getElementById('messT').value;
+            xhr. open('POST', url);
 
-             fetch(url, {
-                 method: 'POST',
-                 body: messT
-             }).then(response => response.body)
-             .then(response => getResponse(response));
-         }
 
-            async function getResponse (response) {
-                let response = await fetch(url);
 
-                let content = await response.json();
+            xhr.onload = function () {
+                let content = JSON.parse(xhr.response);
                 content = content.splice(0, 8);
-
-                let list = document.querySelectorAll('.chatBox');
-
+                
                 let key;
 
                 for (key in content) {
@@ -47,8 +41,40 @@
                             <p>${content[key].mess}</p> 
                         </li>
                     `
-                }// Исправь ID в теге <p> тк я не знаю под каким ключом идет сообщение(Вместо .mess свое)
+                }
             }
+            xhr.send(messT);
+        }
 
+
+        //  function sending () {
+
+        //      return fetch(url, {
+        //          method: 'POST',
+        //          body: messT
+        //      }).then(response => response.messT)
+        //      .then(response => getResponse(response));
+        //  }
+
+        //     async function getResponse (response) {
+        //         let response = await fetch(url);
+
+        //         let content = await response.json();
+        //         content = content.splice(0, 8);
+
+        //         let list = document.querySelectorAll('.chatBox');
+
+        //         let key;
+
+        //         for (key in content) {
+        //             list.innerHTML += `
+        //                 <li> 
+        //                     <h4>${content[key].Name + content[key].Data}</h4>
+        //                     <p>${content[key].mess}</p> 
+        //                 </li>
+        //             `
+        //         }// Исправь ID в теге <p> тк я не знаю под каким ключом идет сообщение(Вместо .mess свое)
+        //     }
+// 
     </script>
 </html>
