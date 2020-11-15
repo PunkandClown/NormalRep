@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
+
+    <style>
+        .chatBox {
+            height: 350px;
+            width: 200px;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow: scroll;
+        }
+
+        .message {
+            padding: 5px 10px;
+            border: 1px solid gray;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,25 +44,27 @@
 
             xhr.onload = function messOn () {
                 let content = JSON.parse(xhr.response);
-                content = content.splice(0, 8);
+                // content = content.splice(0, 8);
 
                 console.log(content); //вывожу в консоль что приходит от сервера 
                 console.log(JSON.stringify(content)); // Проверка приходит ли JSON ОТ сервера
                
-                    list.innerHTML =`
+
+                let mes = document.createElement('div');
+                mes.className = 'message';
+                mes.innerHTML = `
                         <li> 
                             <h4>${content[key].Name}</h4>
                             <h5>${content[key].Data}</h5>
                             <p>${content[key].TextMessage}</p> 
                         </li>
-                    ` // Опять исправь ключи JSON
-                
+                `;
+                list.append(mes);
             }
             xhr.send(messT);
         }
-    </script>
+   
 
-<script>
     document.body.onload = function dowl(){
         let key;
 
@@ -62,5 +79,4 @@
         }
     }
 </script>
-
 </html>
