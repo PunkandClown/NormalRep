@@ -31,42 +31,53 @@
 </body>
 
     
-    <script>
-        let xhr = new XMLHttpRequest();
-        
+<script>
+    function onloadMes() {
+        let key;
+
+        let list = document.getElementById
+
+            let content = JSON.parse(xhr.response);
+            
+            let newDiv = document.createElement('div');
+            newDiv.className = 'message';
+
+        for (key in content) {
+                    newDiv.innerHTML = `
+                    <li> 
+                        <h4>${content[key].Name}</h4>
+                        <h5>${content[key].Data}</h5>
+                        <p>${content[key].TextMessage}</p> 
+                    </li>
+            `;
+                }
+                list.append(newDiv);
+    }
+
+    document.body.onload = function() {
+        let xhr = new XMLHttpRequest;
+
+        xhr.open("GET", "http://10.1.0.48:1337/main");
+
+        xhr.onload = function () {
+             onloadMes();
+            }
+    }
+            
+    
+
         function start() {
+            let xhr = new XMLHttpRequest();
             let messT = document.getElementById('btnst').value;
 
             xhr.open("POST", 'http://10.1.0.48:1337/main');
 
             xhr.onload = function () {
-                let key;
-
-                let list = document.getElementById
-
-                if (xhr.status === 204) {
-                    let content = JSON.parse(xhr.response);
-                    
-                    let newDiv = document.createElement('div');
-                    newDiv.className = 'message';
-
-                    for (key in content) {
-                        newDiv.innerHTML = `
-                        <li> 
-                            <h4>${content[key].Name}</h4>
-                            <h5>${content[key].Data}</h5>
-                            <p>${content[key].TextMessage}</p> 
-                        </li>
-                `;
-                    }
-                    list.append(newDiv);
-                } else {
-                    console.log('Сообщейний нет!');
-                }
-                
+                onloadMes();
             }
-
             xhr.send(messT);
         }
+
+        
     </script>
 </html>
