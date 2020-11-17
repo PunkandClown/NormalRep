@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
+
+    <style>
+        .chatBox {
+            height: 350px;
+            width: 200px;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow: scroll;
+        }
+
+        .message {
+            padding: 5px 10px;
+            border: 1px solid gray;
+        }
+    </style>
 </head>
     <style>
          .chatBox {
@@ -30,6 +45,7 @@
 
 </body>
 
+    
     <script>
         let xhr = new XMLHttpRequest();
         
@@ -67,8 +83,5 @@
 
             xhr.send(messT);
         }
-        
-
     </script>
-
 </html>
