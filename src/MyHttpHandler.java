@@ -148,7 +148,7 @@ public class MyHttpHandler implements HttpHandler {
                     Message message = new Message(HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
                             cookieInBrowser), date, BufferInGetRequestBody(httpExchange));
                     AllMessage.put(keymessage, message);
-                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
+                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 2));
 
                     if (AllMessage.size() > 7) {
                         for (int i = 0; i < 8; i++) {

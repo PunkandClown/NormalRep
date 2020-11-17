@@ -37,55 +37,51 @@
 
         xhr.open("POST", 'http://10.1.0.48:1337/main');
 
-        xhr.onload = function () {
-            let key;
-
+        xhr.onload =  function  () {
 
             let content = JSON.parse(xhr.response);
+            console.log(content);
+                for (let i = 1; i < content.length; i++) {
+                    console.log(content.length);
+                    list.insertAdjacentHTML("beforeend", `<div class="message">
+<h4>${content[i].Name}  ${content[i].Data}</h4> <p>${content[i].TextMessage}</p>
+</div>`);
 
-            let newDiv = document.createElement('div');
-            newDiv.className = 'message';
-
-            for (key in content) {
-                newDiv.innerHTML = `
-                        <h4>${content[key].Name}</h4>
-                        <h5>${content[key].Data}</h5>
-                        <p>${content[key].TextMessage}</p>
-            `;
             }
-            list.append(newDiv);
         }
         xhr.send(messT);
+
     }
+    // function load () {
+    //     let xhr = new XMLHttpRequest;
+    //
+    //     xhr.open("GET", "http://10.1.0.48:1337/main");
+    //
+    //     const  all = 'all';
+    //
+    //     xhr.onload = function () {
+    //         let key;
+    //         let list = document.getElementById('boxChat');
+    //
+    //
+    //         let content = JSON.parse(xhr.response);
+    //
+    //         let newDiv = document.createElement('div');
+    //         newDiv.className = 'message';
+    //
+    //         for (key in content) {
+    //             newDiv.innerHTML = `
+    //                     <h4>${content[key].Name}</h4>
+    //                     <h5>${content[key].Data}</h5>
+    //                     <p>${content[key].TextMessage}</p>
+    //         `;
+    //         }
+    //         list.append(newDiv);
+    //     }
+    //     xhr.send();
+    //
+    // }
 
-    setInterval(function () {
-        let xhr = new XMLHttpRequest;
-
-        xhr.open("GET", "http://10.1.0.48:1337/main");
-
-        const  all = 'all';
-
-        xhr.onload = function () {
-            let key;
-            let list = document.getElementById('boxChat');
-
-
-            let content = JSON.parse(xhr.response);
-
-            let newDiv = document.createElement('div');
-            newDiv.className = 'message';
-
-            for (key in content) {
-                newDiv.innerHTML = `
-                        <h4>${content[key].Name}</h4>
-                        <h5>${content[key].Data}</h5>
-                        <p>${content[key].TextMessage}</p>
-            `;
-            }
-            list.append(newDiv);
-        }
-        xhr.send(all);
-    }, 1000)
 
 
 </script>
