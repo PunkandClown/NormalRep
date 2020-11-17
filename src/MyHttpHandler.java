@@ -27,8 +27,8 @@ public class MyHttpHandler implements HttpHandler {
         String url = httpExchange.getHttpContext().getPath();
         String RequestMeth = httpExchange.getRequestMethod();
         String date = localitytime.getHour() + ":" + localitytime.getMinute() + ":" +localitytime.getSecond();
-        HashmapClass.PersonBase.put("1", new fab().Fabm( "1","1","1"));
-        HashmapClass.PersonBase.put("2", new fab().Fabm( "2","2","2"));
+        HashmapClass.PersonBase.put("1", new Person( "1","1","1"));
+        HashmapClass.PersonBase.put("2", new Person( "2","2","2"));
         switch (url){
             case "/text":
                 if ("GET".equals(RequestMeth)) {
@@ -98,9 +98,8 @@ public class MyHttpHandler implements HttpHandler {
         }else if("POST".equals(RequestMeth)){
             if(LoginTrueFalse(BufferInGetRequestBody(httpExchange), httpExchange)) {
                 handleResponse(httpExchange, main,202);
-            } else {
-                handleResponse(httpExchange,login,204);
             }
+                handleResponse(httpExchange, login,204);
         }
     }
     public static boolean LoginTrueFalse(String  information, HttpExchange httpExchange) throws IOException {
@@ -139,14 +138,18 @@ public class MyHttpHandler implements HttpHandler {
         if(httpExchange.getRequestHeaders().containsKey("Cookie")) {
             String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
                     .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
+
             if(HashmapClass.NickAndCookie.containsValue(cookieInBrowser)) {
                 if ("GET".equals(RequestMete)) {
+
                     handleResponse(httpExchange, main, 200);
+                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage,2));
                 } else if ("POST".equals(RequestMete)) {
                     Message message = new Message(HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
                             cookieInBrowser), date, BufferInGetRequestBody(httpExchange));
                     AllMessage.put(keymessage, message);
-                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage));
+                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
+
                     if (AllMessage.size() > 7) {
                         for (int i = 0; i < 8; i++) {
                             AllMessage.remove(i);
@@ -160,15 +163,24 @@ public class MyHttpHandler implements HttpHandler {
             handleResponse(httpExchange, login, 200);
         }
     }
-    public static String SBAllMessageJson(Map map){
+    public static String SBAllMessageJson(Map map, int OneMessageElseAll){
         StringBuilder SB = new StringBuilder();
         SB.append("[\n");
-        for(int i = 0; i < map.size(); i++){
-            String ParseMessage = map.get(i).toString();
-            if(i != 0){
+        if(OneMessageElseAll == 1){
+            int counter = 0;
+            for(int i = 0; i < map.size(); i++){
+                counter = i;
+            }
+            String ParseMessage = map.get(counter).toString();
+            SB.append(ParseMessage);
+        } else if (OneMessageElseAll == 2){
+            for(int a = 0; a < map.size(); a++){
+            String ParseMessage = map.get(a).toString();
+            if(a != 0){
                 SB.append(",\n");
             }
             SB.append(ParseMessage);
+        }
         }
         SB.append("\n]");
         System.out.println(SB.toString());

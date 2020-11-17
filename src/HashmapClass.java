@@ -15,7 +15,7 @@ public class HashmapClass {
             System.out.println("Такой ник уже есть");
             return false;
         } else {
-            PersonBase.put(Nickname, new fab().Fabm( Nickname,Name,Password));
+            PersonBase.put(Nickname, new Person(Nickname,Name,Password));
             return true;
         }
     }

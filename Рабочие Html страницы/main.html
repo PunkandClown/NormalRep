@@ -5,48 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
 </head>
-<body>
-<form action="">
-    <textarea name="mess" id="messT" cols="30" rows="10"></textarea>
-    <button onclick="send()" id="btnst"></button>
-</form>
+<style>
+    .chatBox {
+        height: 350px;
+        width: 200px;
+        display: flex;
+        flex-direction: column-reverse;
+        overflow-y: scroll;
+    }
 
-<div  class="chatBox">
+    .message {
+        padding: 5px 10px;
+        border: 1px solid gray;
+    }
+</style>
+<body>
+<textarea id="messT" cols="30" rows="10"></textarea>
+<button onclick="start()">Отправить</button>
+
+<div id="boxChat" class="chatBox">
 </div>
 
 </body>
 
+
 <script>
-    const url = 'http://10.1.0.48:1337/main'
-    let messT = document.getElementById('messT').value;
+    function start() {
+        let xhr = new XMLHttpRequest();
+        let messT = document.getElementById('messT').value;
+        let list = document.getElementById('boxChat');
 
-    function send(){
+        xhr.open("POST", 'http://10.1.0.48:1337/main');
 
-    }
+        xhr.onload = function () {
+            let key;
 
-    async function getResponse  ()  {
-        let response = await fetch(url, {
-            method: 'POST',
-            body: messT
-        });
-        console.log(messT);
-        let content = await response.json();
-        content = content.splice(0, 8);
 
-        let list = document.querySelectorAll('.chatBox');
+            let content = JSON.parse(xhr.response);
 
-        let key;
+            let newDiv = document.createElement('div');
+            newDiv.className = 'message';
 
-        for (key in content) {
-            list.innerHTML += `
-                    <li>
-                        <h4>${content[key].Name} </h4>
-                        // <h4>${content[key].Data}</h4>
-                        // <p>${content[key].TextMessage}</p>
-                    </li>
-                `
+            for (key in content) {
+                newDiv.innerHTML = `
+                        <h4>${content[key].Name}</h4>
+                        <h5>${content[key].Data}</h5>
+                        <p>${content[key].TextMessage}</p>
+            `;
+            }
+            list.append(newDiv);
         }
+        xhr.send(messT);
     }
+
+    setInterval(function () {
+        let xhr = new XMLHttpRequest;
+
+        xhr.open("GET", "http://10.1.0.48:1337/main");
+
+        const  all = 'all';
+
+        xhr.onload = function () {
+            let key;
+            let list = document.getElementById('boxChat');
+
+
+            let content = JSON.parse(xhr.response);
+
+            let newDiv = document.createElement('div');
+            newDiv.className = 'message';
+
+            for (key in content) {
+                newDiv.innerHTML = `
+                        <h4>${content[key].Name}</h4>
+                        <h5>${content[key].Data}</h5>
+                        <p>${content[key].TextMessage}</p>
+            `;
+            }
+            list.append(newDiv);
+        }
+        xhr.send(all);
+    }, 1000)
+
 
 </script>
 </html>
