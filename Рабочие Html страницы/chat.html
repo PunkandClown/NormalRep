@@ -5,10 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
 </head>
+    <style>
+         .chatBox {
+            height: 350px;
+            width: 200px;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow-y: scroll;
+        }
+
+        .message {
+            padding: 5px 10px;
+            border: 1px solid gray;
+        }
+    </style>
 <body>
-    <form action="">
+    <form>
         <textarea name="mess" id="messT" cols="30" rows="10"></textarea>
-      <button></button>
+      <button onclick="start()">Отправить</button>
     </form>
 
     <div id="btnst" class="chatBox">
@@ -17,34 +31,44 @@
 </body>
 
     <script>
-         let url = 'http://10.1.0.48:1337/main'
-
-         let btnst = document.getElementById('btnst');
-         btnst.addEventListener('click') = async getResponse =>() => {
-            let response = await fetch(url);
-
-            let content = await response.json();
-            content = content.splice(0, 8);
-
-            let list = document.querySelectorAll('.chatBox');
-
-            let key;
-
-            for (key in content) {
-                list.innerHTML += `
-                    <li> 
-                        <h4>${content[key].name + content[key].time}</h4>
-                    </li>
-                `
-            }
-        }
-
-        ва
-        в
-        а
-        в
+        let xhr = new XMLHttpRequest();
         
-        // демка для паши 
+        function start() {
+            let messT = document.getElementById('btnst').value;
+
+            xhr.open("POST", 'http://10.1.0.48:1337/main');
+
+            xhr.onload = function () {
+                let key;
+
+                let list = document.getElementById
+
+                if (xhr.status === 204) {
+                    let content = JSON.parse(xhr.response);
+                    
+                    let newDiv = document.createElement('div');
+                    newDiv.className = 'message';
+
+                    for (key in content) {
+                        newDiv.innerHTML = `
+                        <li> 
+                            <h4>${content[key].Name}</h4>
+                            <h5>${content[key].Data}</h5>
+                            <p>${content[key].TextMessage}</p> 
+                        </li>
+                `;
+                    }
+                    list.append(newDiv);
+                } else {
+                    console.log('Сообщейний нет!');
+                }
+                
+            }
+
+            xhr.send(messT);
+        }
+        
+
     </script>
 
 </html>
