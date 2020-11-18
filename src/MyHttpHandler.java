@@ -29,6 +29,7 @@ public class MyHttpHandler implements HttpHandler {
         String date = localitytime.getHour() + ":" + localitytime.getMinute() + ":" +localitytime.getSecond();
         HashmapClass.PersonBase.put("1", new Person( "1","1","1"));
         HashmapClass.PersonBase.put("2", new Person( "2","2","2"));
+
         switch (url){
             case "/text":
                 if ("GET".equals(RequestMeth)) {
@@ -83,14 +84,10 @@ public class MyHttpHandler implements HttpHandler {
         String information = BufferInGetRequestBody(httpExchange);
         String Str = information.substring(information.indexOf('{') +1, information.lastIndexOf('}'));
         StringTokenizer st = new StringTokenizer(Str, ",");
-        String Nick = st.nextToken().trim();
-        String Nam = st.nextToken().trim();
-        String pas = st.nextToken().trim();
-        if(HashmapClass.base(Nick,Nam,pas, httpExchange)){
-            handleResponse(httpExchange, login, 200);
-        } else {
-            handleResponse(httpExchange, login, 204);
-        }
+        String nick = st.nextToken().trim();
+        String name = st.nextToken().trim();
+        String pass = st.nextToken().trim();
+        BDclass.BDhandlerUserSet(nick,name,pass, httpExchange,0);
     }
     public static void caseLogin(HttpExchange httpExchange, String RequestMeth) throws IOException {
         if("GET".equals(RequestMeth)) {
@@ -105,26 +102,31 @@ public class MyHttpHandler implements HttpHandler {
     public static boolean LoginTrueFalse(String  information, HttpExchange httpExchange) throws IOException {
         String Str = information.substring(information.indexOf('{') +1, information.lastIndexOf('}'));
         StringTokenizer st = new StringTokenizer(Str, ",");
-        String Nick = st.nextToken().trim();
-        String pas = st.nextToken().trim();
-        if(HashmapClass.PersonBase.containsKey(Nick)){
-            String Getpass = HashmapClass.PersonBase.get(Nick).getPassword();
-            if(Getpass.equals(pas)){
-                if(httpExchange.getRequestHeaders().containsKey("Cookie")){
-                    String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
-                            .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
-                    if(!HashmapClass.NickAndCookie.containsValue(cookieInBrowser)){
-                        HashmapClass.NickAndCookie.put(Nick, cookieInBrowser);
-                        return true;
-                    }
-                } else {
-                    String newCookie = Str.replaceAll(",", "") + "Cookie";
-                    MyHttpHandler.CookieSetter(httpExchange, newCookie, "202", main);
-                    return false;
-                }
-                return true;
-            }
-        }
+        String nickname = st.nextToken().trim();
+        String pass = st.nextToken().trim();
+
+
+
+        BDclass.BDhandlerUserSet(nickname, "name", pass, httpExchange, 1);
+
+//        if(HashmapClass.PersonBase.containsKey(Nick)){
+//            String Getpass = HashmapClass.PersonBase.get(Nick).getPassword();
+//            if(Getpass.equals(pas)){
+//                if(httpExchange.getRequestHeaders().containsKey("Cookie")){
+//                    String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
+//                            .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
+//                    if(!HashmapClass.NickAndCookie.containsValue(cookieInBrowser)){
+//                        HashmapClass.NickAndCookie.put(Nick, cookieInBrowser);
+//                        return true;
+//                    }
+//                } else {
+//                    String newCookie = Str.replaceAll(",", "") + "Cookie";
+//                    MyHttpHandler.CookieSetter(httpExchange, newCookie, "202", main);
+//                    return false;
+//                }
+//                return true;
+//            }
+//        }
         return false;
     }
     public static void CookieSetter(HttpExchange httpExchange, String Cookie, String code, String page) throws IOException {
