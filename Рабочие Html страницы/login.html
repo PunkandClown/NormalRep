@@ -4,34 +4,63 @@
     <meta charset="UTF-8">
     <title>Login</title>
 </head>
+<style>
+    .form-login {
+        margin: 0 auto;
+        width: 250px;
+        height: 400px;
+        border: 1px solid black;
+    }
+
+    label {
+        margin-left: 40px;
+        font-weight: bold;
+    }
+
+    button {
+        margin-left: 38px;
+        margin-top: 20px;
+        width: 100px;
+        font-weight: bold;
+    }
+
+    p {
+        margin-left: 35px;
+    }
+
+    img {
+        width: 250px;
+        height: 233px;
+    }
+</style>
 <body>
+
+<div class="form-login">
     <p>
-        <label for="NN">Введите логин</label>
+        <label for="NN">Введите логин:</label> 
             <input type="name" id="NN">
     </p>
-
     <p>
-        <label for="pass">Введите пароль</label>
+        <label for="pass">Введите пароль:</label>
             <input type="password" id="pass">
-    </p>
+            <button onclick="start()">Войти</button>
+        </p>
 
-    <button onclick="start()">Войти</button>
+        <img src="https://ilovecross.com/wp-content/uploads/2019/07/2020-Volkswagen-Tiguan-10.jpg" alt="Фото">
+</div>
+
+
 </body>
     <script>
-
-        let xhr = new XMLHttpRequest();
-
         function start () {
+            let xhr = new XMLHttpRequest();
 
             let NN = document.getElementById('NN').value;
             let pass = document.getElementById('pass').value;
 
             let sending = '{' + NN + ',' + pass + '}';
 
-
             xhr.open('POST', 'http://10.1.0.48:1337/login');
-
-            xhr.send(sending)
 
             xhr.onload = function () {
                 if (xhr.responseText === '203') {
@@ -40,7 +69,8 @@
                 } else {
                     alert('Логин или пароль не верный, попробуйте снова!');
                 }
-            }            
+            } 
+            xhr.send(sending)           
         }
     </script>
 </html>
