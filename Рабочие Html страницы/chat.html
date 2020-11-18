@@ -20,64 +20,120 @@
         }
     </style>
 <body>
-        <textarea name="mess" id="messT" cols="30" rows="10"></textarea>
-      <button onclick="start()">Отправить</button>
+    <form name="publish">
+        <input type="text" name="message" />
+        <input type="submit" value="Send" />
+      </form>
 
-    <div id="btnst" class="chatBox">
+    <div id="subMes" class="chatBox">
     </div>
 
 </body>
 
     
 <script>
-    function onloadMes() {
-        let key;
+    function Form(form) {
 
-        let list = document.getElementById
+        function sendMes(message) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://10.1.0.48:1337/main', true);
 
-            let content = JSON.parse(xhr.response);
-            
-            let newDiv = document.createElement('div');
-            newDiv.className = 'message';
+            xhr.send(message);
 
-        for (key in content) {
-                    newDiv.innerHTML = `
-                    <li> 
-                        <h4>${content[key].Name}</h4>
-                        <h5>${content[key].Data}</h5>
-                        <p>${content[key].TextMessage}</p> 
-                    </li>
-            `;
-                }
-                list.append(newDiv);
-    }
+        }
 
-    document.body.onload = function() {
-        let xhr = new XMLHttpRequest;
+        form.onsubmit = function () {
+            let message = form.message.value;
 
-        xhr.open("GET", "http://10.1.0.48:1337/main");
-
-        xhr.onload = function () {
-             onloadMes();
+            console.log(message);
+            if (message) {
+                sendMes(message);
             }
-
-        xhr.send();
+            return false;
+        }
     }
+
+    function subMes (elem) {
+        function sub() {
+            let xhr = new XMLHttpRequest();
+
+    //         xhr.onreadystatechange = function () {
+    //             if (this.readyState != 4) return
+                
+    //             if (this.status == 200) {
+    //             if (this.responseText) {
+    //             // сервер может закрыть соединение без ответа при перезагрузке
+    //             showMessage(this.responseText);
+    //                 }
+    //                 subMes();
+    //             return;
+    //             } 
+    //             if (this.status != 502) {
+    //     // 502 - прокси ждал слишком долго, надо пересоединиться, это не ошибка
+    //     showMessage(this.statusText); // показать ошибку
+    //   }
+
+    //   setTimeout(subscribe, 1000); // попробовать ещё раз через 1 сек
+    // }
+    xhr.open("GET", 'http://10.1.0.48:1337/main', true);
+    xhr.send();
+  }
+
+  subMes();
+
+}
+
+
+ // function onloadMes() {
+    //     let key;
+
+    //     let list = document.getElementById
+
+    //         let content = JSON.parse(xhr.response);
+            
+    //         let newDiv = document.createElement('div');
+    //         newDiv.className = 'message';
+
+    //     for (key in content) {
+    //                 newDiv.innerHTML = `
+    //                 <li> 
+    //                     <h4>${content[key].Name}</h4>
+    //                     <h5>${content[key].Data}</h5>
+    //                     <p>${content[key].TextMessage}</p> 
+    //                 </li>
+    //         `;
+    //             }
+    //             list.append(newDiv);
+    // }
+
+    // document.body.onload = function() {
+    //     let xhr = new XMLHttpRequest;
+
+    //     xhr.open("GET", "http://10.1.0.48:1337/main");
+
+    //     xhr.onload = function () {
+    //          onloadMes();
+    //         }
+
+    //     xhr.send();
+    // }
             
     
 
-        function start() {
-            let xhr = new XMLHttpRequest();
-            let messT = document.getElementById('btnst').value;
+    //     function start() {
+    //         let xhr = new XMLHttpRequest();
+    //         let messT = document.getElementById('btnst').value;
 
-            xhr.open("POST", 'http://10.1.0.48:1337/main');
+    //         xhr.open("POST", 'http://10.1.0.48:1337/main');
 
-            xhr.onload = function () {
-                onloadMes();
-            }
-            xhr.send(messT);
-        }
+    //         xhr.onload = function () {
+    //             onloadMes();
+    //         }
+    //         xhr.send(messT);
+    //     }
 
+    // new form(document.forms.publish, 'publish');
+    
 
     </script>
 </html>
