@@ -13,10 +13,10 @@ public class MyHttpHandler implements HttpHandler {
 //    public String  index = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
 //    public static String login = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
 //    public static String  main = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
-    public static String indexCSS = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\indexCSS.css";
-    public String  index = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
-    public static String login = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
-    public static String  main = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
+    public static String indexCSS = "Рабочие Html страницы\\indexCSS.css";
+    public String  index = "Рабочие Html страницы\\index.html";
+    public static String login = "Рабочие Html страницы\\login.html";
+    public static String  main = "Рабочие Html страницы\\main.html";
 
     public static Map<Integer, Message> AllMessage = new HashMap<>();
     @Override
@@ -44,7 +44,9 @@ public class MyHttpHandler implements HttpHandler {
                 handleCssResponse(httpExchange, indexCSS, 200);
                 break;
             default:
-                handleResponse(httpExchange, login, 200);
+                System.out.println("Дефолт");
+                handleResponse(httpExchange, index, 200);
+                break;
         }
     }
     public static void handleCssResponse(HttpExchange httpExchange, String index, int codeHeader)  throws IOException {
@@ -113,22 +115,28 @@ public class MyHttpHandler implements HttpHandler {
 
             if(HashmapClass.NickAndCookie.containsValue(cookieInBrowser)) {
                 if ("GET".equals(RequestMete)) {
-
                     handleResponse(httpExchange, main, 200);
                     handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage,2));
                 } else if ("POST".equals(RequestMete)) {
-                    Message message = new Message(HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
-                            cookieInBrowser), date, BufferInGetRequestBody(httpExchange));
-                    AllMessage.put(keymessage, message);
-                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 2));
 
-                    if (AllMessage.size() > 7) {
-                        for (int i = 0; i < 8; i++) {
-                            AllMessage.remove(i);
-                            keymessage--;
+
+                    StringBuilder SBB = new StringBuilder();
+                    SBB.append(BufferInGetRequestBody(httpExchange));
+                    System.out.println(SBB);
+                    if(!SBB.toString().equals("")){
+                        Message message = new Message(HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
+                                cookieInBrowser), date, SBB.toString());
+                        AllMessage.put(keymessage, message);
+                        handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
+                        if (AllMessage.size() > 9) {
+                            for (int i = 0; i < 10; i++) {
+                                AllMessage.remove(i);
+                                keymessage--;
+                            }
                         }
+                        keymessage++;
                     }
-                    keymessage++;
+                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
                 }
             }
         } else {
@@ -145,6 +153,7 @@ public class MyHttpHandler implements HttpHandler {
             }
             String ParseMessage = map.get(counter).toString();
             SB.append(ParseMessage);
+            System.out.println(ParseMessage);
         } else if (OneMessageElseAll == 2){
             for(int a = 0; a < map.size(); a++){
             String ParseMessage = map.get(a).toString();
@@ -152,17 +161,17 @@ public class MyHttpHandler implements HttpHandler {
                 SB.append(",\n");
             }
             SB.append(ParseMessage);
+
         }
         }
         SB.append("\n]");
-        System.out.println(SB.toString());
         return SB.toString();
     }
     public static void handleResponseForMessage(HttpExchange httpExchange, String numb)  throws IOException {
         byte[] arrayss = numb.getBytes();
         httpExchange.sendResponseHeaders(200, arrayss.length);
         handleOutputStream(httpExchange, arrayss);
-        System.out.println("Сообщения отправлены");
+        System.out.println("Сообщения отправлены: " + numb);
     }
     public static String KeysValue(){
 //        Set<String> keys = AllMessage.keySet();
