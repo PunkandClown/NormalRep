@@ -9,22 +9,21 @@
          .chatBox {
             height: 350px;
             width: 200px;
-            display: flex;
-            flex-direction: column-reverse;
+            /* display: flex;
+            flex-direction: column-reverse; */
             overflow-y: scroll;
         }
 
         .message {
+            display: flex;
+            flex-direction: column-reverse;
             padding: 5px 10px;
             border: 1px solid gray;
         }
     </style>
 <body>
-    <form name="publish">
-        <input type="text" name="message" />
-        <input type="submit" value="Send" />
-      </form>
-
+        <input type="text" id="messageInp" />
+        <button onclick="addMess()">Отправить!</button>
     <div id="subMes" class="chatBox">
     </div>
 
@@ -32,30 +31,77 @@
 
     
 <script>
-    function Form(form) {
+        let content; 
+        let key;
 
-        function sendMes(message) {
+        function addMess() {
+            let message = document.getElementById('messageInp').value;
+            console.log(message);
+
             let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://10.1.0.48:1337/main', true);
-
+            xhr.open('POST', 'http://10.1.0.48:1337/main');
             xhr.send(message);
 
+            let list = document.getElementById('subMes');
+            let messAdd = document.createElement('div');
+            messAdd.innerText = message;
+            list.append(messAdd);
         }
 
-        form.onsubmit = function () {
-            let message = form.message.value;
-
-            console.log(message);
-            if (message) {
-                sendMes(message);
-            }
-            return false;
-        }
-    }
-
-    function subMes (elem) {
-        function sub() {
+        function openChanal() {
             let xhr = new XMLHttpRequest();
+
+            xhr.open('GET', 'http://10.1.0.48:1337/main', true);
+
+            xhr.onload = function () {
+                content = JSON.parse(xhr.response);
+
+                for (key in content) {
+                    let newDiv = document.createElement('div');
+                    newDiv.className = 'message';
+                    newDiv.innerHTML += `
+                                <h4>${content[key].Name}</h4>
+                                <h5>${content[key].Data}</h5>
+                                <p>${content[key].TextMessage}</p> 
+                    `;
+                    list.appendChild(newDiv);
+                }
+            }
+        }
+
+
+
+    
+
+
+
+
+
+
+    // function Form(form) {
+
+    //     function sendMes(message) {
+    //         let xhr = new XMLHttpRequest();
+    //         xhr.open('POST', 'http://10.1.0.48:1337/main', true);
+
+    //         xhr.send(message);
+
+    //     }
+
+    //     form.onsubmit = function () {
+    //         let message = form.message.value;
+
+    //         console.log(message);
+    //         if (message) {
+    //             sendMes(message);
+    //         }
+    //         return false;
+    //     }
+    // }
+
+    // function subMes (elem) {
+    //     function sub() {
+            // let xhr = new XMLHttpRequest();
 
     //         xhr.onreadystatechange = function () {
     //             if (this.readyState != 4) return
@@ -75,13 +121,13 @@
 
     //   setTimeout(subscribe, 1000); // попробовать ещё раз через 1 сек
     // }
-    xhr.open("GET", 'http://10.1.0.48:1337/main', true);
-    xhr.send();
-  }
+    // xhr.open("GET", 'http://10.1.0.48:1337/main', true);
+//     xhr.send();
+//   }
 
-  subMes();
+//   subMes();
 
-}
+// }
 
 
  // function onloadMes() {
