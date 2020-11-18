@@ -1,0 +1,18 @@
+html,
+.reg {
+        font-family: 'Orbitron', sans-serif;
+        width: 220px;
+        height: 230px;
+        margin: 0 auto;
+        background-image: url(https://i.gifer.com/9lZ7.gif);
+        background-repeat: no-repeat;
+    }
+
+    .form {
+        margin-left: 17px;
+        margin-top: -10px;
+    }
+
+    .sub {
+        margin-left: 19px;
+    }
