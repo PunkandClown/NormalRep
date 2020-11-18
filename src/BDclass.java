@@ -1,5 +1,6 @@
 import com.sun.net.httpserver.HttpExchange;
 
+import java.io.IOException;
 import java.sql.*;
 
 class BDclass{
@@ -18,9 +19,9 @@ class BDclass{
                     MyHttpHandler.handleResponse(httpExchange, MyHttpHandler.login, 204);
                 }
             } else if(logoutindex == 1){
-                LoginTrueFalse(conn,Nickname,Password);
+                LoginTrueFalse(conn,Nickname,Password, httpExchange);
             }
-            conn.close();
+
         }
     }
         catch(Exception ex){
@@ -28,16 +29,15 @@ class BDclass{
         System.out.println(ex);
     }
 }
-    public static boolean LoginTrueFalse(Connection conn, String Nickname, String Password) throws SQLException {
-            if(callLogin(conn,Nickname, Password)){
-                System.out.println("Логин успешен");
+    public static void LoginTrueFalse(Connection conn, String Nickname, String Password,HttpExchange httpExchange) throws SQLException, IOException {
+            if(callLogin(conn,Nickname,Password)){
+                String newCookie = "Cock"+Nickname+"boo";
+                HashmapClass.NickAndCookie.put(Nickname, newCookie);
+                MyHttpHandler.CookieSetter(httpExchange, newCookie, "202", MyHttpHandler.main);
+            } else {
+                MyHttpHandler.handleResponse(httpExchange, MyHttpHandler.login, 204);
             }
-
-        return false;
     }
-
-
-
     static void get(Connection conn) throws SQLException {
         PreparedStatement preparedStatement = conn.prepareStatement("select * from users");
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -65,6 +65,6 @@ class BDclass{
         callableStatement.setString(2, Password);
         callableStatement.registerOutParameter(3, Types.BOOLEAN);
         callableStatement.execute();
-        return callableStatement.getBoolean(2);
+        return callableStatement.getBoolean(3);
     }
 }

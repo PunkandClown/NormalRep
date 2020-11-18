@@ -13,7 +13,6 @@ public class MyHttpHandler implements HttpHandler {
 //    public String  index = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
 //    public static String login = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
 //    public static String  main = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
-
     public static String indexCSS = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\indexCSS.css";
     public String  index = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
     public static String login = "C:\\Users\\user\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
@@ -27,9 +26,6 @@ public class MyHttpHandler implements HttpHandler {
         String url = httpExchange.getHttpContext().getPath();
         String RequestMeth = httpExchange.getRequestMethod();
         String date = localitytime.getHour() + ":" + localitytime.getMinute() + ":" +localitytime.getSecond();
-        HashmapClass.PersonBase.put("1", new Person( "1","1","1"));
-        HashmapClass.PersonBase.put("2", new Person( "2","2","2"));
-
         switch (url){
             case "/text":
                 if ("GET".equals(RequestMeth)) {
@@ -93,41 +89,15 @@ public class MyHttpHandler implements HttpHandler {
         if("GET".equals(RequestMeth)) {
             handleResponse(httpExchange, login,200);
         }else if("POST".equals(RequestMeth)){
-            if(LoginTrueFalse(BufferInGetRequestBody(httpExchange), httpExchange)) {
-                handleResponse(httpExchange, main,202);
-            }
-                handleResponse(httpExchange, login,204);
+            LoginTrueFalse(BufferInGetRequestBody(httpExchange), httpExchange);
         }
     }
-    public static boolean LoginTrueFalse(String  information, HttpExchange httpExchange) throws IOException {
+    public static void LoginTrueFalse(String  information, HttpExchange httpExchange) throws IOException {
         String Str = information.substring(information.indexOf('{') +1, information.lastIndexOf('}'));
         StringTokenizer st = new StringTokenizer(Str, ",");
         String nickname = st.nextToken().trim();
         String pass = st.nextToken().trim();
-
-
-
         BDclass.BDhandlerUserSet(nickname, "name", pass, httpExchange, 1);
-
-//        if(HashmapClass.PersonBase.containsKey(Nick)){
-//            String Getpass = HashmapClass.PersonBase.get(Nick).getPassword();
-//            if(Getpass.equals(pas)){
-//                if(httpExchange.getRequestHeaders().containsKey("Cookie")){
-//                    String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
-//                            .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
-//                    if(!HashmapClass.NickAndCookie.containsValue(cookieInBrowser)){
-//                        HashmapClass.NickAndCookie.put(Nick, cookieInBrowser);
-//                        return true;
-//                    }
-//                } else {
-//                    String newCookie = Str.replaceAll(",", "") + "Cookie";
-//                    MyHttpHandler.CookieSetter(httpExchange, newCookie, "202", main);
-//                    return false;
-//                }
-//                return true;
-//            }
-//        }
-        return false;
     }
     public static void CookieSetter(HttpExchange httpExchange, String Cookie, String code, String page) throws IOException {
         httpExchange.getResponseHeaders().put("Set-Cookie",
