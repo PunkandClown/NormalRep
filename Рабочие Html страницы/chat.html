@@ -9,8 +9,8 @@
          .chatBox {
             height: 350px;
             width: 200px;
-            /* display: flex;
-            flex-direction: column-reverse; */
+            display: flex;
+            flex-direction: column-reverse;
             overflow-y: scroll;
         }
 
@@ -45,7 +45,7 @@
             let list = document.getElementById('subMes');
             let messAdd = document.createElement('div');
             messAdd.innerText = message;
-            list.append(messAdd);
+            list.prepend(messAdd);
         }
 
         function openChanal() {
@@ -68,6 +68,7 @@
                 }
             }
         }
+        setInterval(openChanal, 1000);
 
 
 
