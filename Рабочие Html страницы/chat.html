@@ -5,182 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
 </head>
-    <style>
-         .chatBox {
-            height: 350px;
-            width: 200px;
-            display: flex;
-            flex-direction: column-reverse;
-            overflow-y: scroll;
-        }
+<style>
+    .chatBox {
+        height: 350px;
+        width: 200px;
+        display: flex;
+        flex-direction: column-reverse;
+        overflow-y: scroll;
+    }
 
-        .message {
-            display: flex;
-            flex-direction: column-reverse;
-            padding: 5px 10px;
-            border: 1px solid gray;
-        }
-    </style>
+    .message {
+        display: flex;
+        flex-direction: column-reverse;
+        padding: 5px 10px;
+        border: 1px solid gray;
+    }
+</style>
 <body>
-        <input type="text" id="messageInp" />
-        <button onclick="addMess()">Отправить!</button>
-    <div id="subMes" class="chatBox">
-    </div>
+<input type="text" id="messageInp" />
+<button onclick="addMess()">Отправить!</button>
+<div id="subMes" class="chatBox">
+</div>
 
 </body>
 
-    
+
 <script>
-        let content; 
-        let key;
+    let key;
+    let content;
 
-        function addMess() {
-            let message = document.getElementById('messageInp').value;
-            console.log(message);
 
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://10.1.0.48:1337/main');
-            xhr.send(message);
+    function addMess() {
+        let message = document.getElementById('messageInp').value;
+        console.log(message);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://10.1.0.48:1337/main');
+        xhr.send(message);
+    }
+
+    function openChanal(content) {
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('POST', 'http://10.1.0.48:1337/main', true);
+
+        xhr.onload = function () {
 
             let list = document.getElementById('subMes');
-            let messAdd = document.createElement('div');
-            messAdd.innerText = message;
-            list.prepend(messAdd);
+
+            content = JSON.parse(xhr.response);
+            
+            console.log(xhr.response);
+            
         }
+            xhr.send();
+    }
 
-        function openChanal() {
-            let xhr = new XMLHttpRequest();
+    function getMess(content) {
+        if (typeof content == "object") {
 
-            xhr.open('GET', 'http://10.1.0.48:1337/main', true);
-
-            xhr.onload = function () {
-                content = JSON.parse(xhr.response);
-
-                for (key in content) {
-                    let newDiv = document.createElement('div');
-                    newDiv.className = 'message';
-                    newDiv.innerHTML += `
-                                <h4>${content[key].Name}</h4>
-                                <h5>${content[key].Data}</h5>
-                                <p>${content[key].TextMessage}</p> 
-                    `;
-                    list.appendChild(newDiv);
-                }
+        for (key in content) {
+                let newDiv = document.createElement('div');
+                newDiv.className = 'message';
+                newDiv.innerHTML = `
+                <h4>Name:${content[key].Name}  ${content[key].Data}</h4>
+                <p>${content[key].TextMessage}</p>
+                `;
+            
+                list.prepend(newDiv);
             }
         }
-        setInterval(openChanal, 1000);
-
-
-
-    
-
-
-
-
-
-
-    // function Form(form) {
-
-    //     function sendMes(message) {
-    //         let xhr = new XMLHttpRequest();
-    //         xhr.open('POST', 'http://10.1.0.48:1337/main', true);
-
-    //         xhr.send(message);
-
-    //     }
-
-    //     form.onsubmit = function () {
-    //         let message = form.message.value;
-
-    //         console.log(message);
-    //         if (message) {
-    //             sendMes(message);
-    //         }
-    //         return false;
-    //     }
-    // }
-
-    // function subMes (elem) {
-    //     function sub() {
-            // let xhr = new XMLHttpRequest();
-
-    //         xhr.onreadystatechange = function () {
-    //             if (this.readyState != 4) return
-                
-    //             if (this.status == 200) {
-    //             if (this.responseText) {
-    //             // сервер может закрыть соединение без ответа при перезагрузке
-    //             showMessage(this.responseText);
-    //                 }
-    //                 subMes();
-    //             return;
-    //             } 
-    //             if (this.status != 502) {
-    //     // 502 - прокси ждал слишком долго, надо пересоединиться, это не ошибка
-    //     showMessage(this.statusText); // показать ошибку
-    //   }
-
-    //   setTimeout(subscribe, 1000); // попробовать ещё раз через 1 сек
-    // }
-    // xhr.open("GET", 'http://10.1.0.48:1337/main', true);
-//     xhr.send();
-//   }
-
-//   subMes();
-
-// }
-
-
- // function onloadMes() {
-    //     let key;
-
-    //     let list = document.getElementById
-
-    //         let content = JSON.parse(xhr.response);
-            
-    //         let newDiv = document.createElement('div');
-    //         newDiv.className = 'message';
-
-    //     for (key in content) {
-    //                 newDiv.innerHTML = `
-    //                 <li> 
-    //                     <h4>${content[key].Name}</h4>
-    //                     <h5>${content[key].Data}</h5>
-    //                     <p>${content[key].TextMessage}</p> 
-    //                 </li>
-    //         `;
-    //             }
-    //             list.append(newDiv);
-    // }
-
-    // document.body.onload = function() {
-    //     let xhr = new XMLHttpRequest;
-
-    //     xhr.open("GET", "http://10.1.0.48:1337/main");
-
-    //     xhr.onload = function () {
-    //          onloadMes();
-    //         }
-
-    //     xhr.send();
-    // }
-            
-    
-
-    //     function start() {
-    //         let xhr = new XMLHttpRequest();
-    //         let messT = document.getElementById('btnst').value;
-
-    //         xhr.open("POST", 'http://10.1.0.48:1337/main');
-
-    //         xhr.onload = function () {
-    //             onloadMes();
-    //         }
-    //         xhr.send(messT);
-    //     }
-
-    // new form(document.forms.publish, 'publish');
-    
-
-    </script>
+    }
+    setTimeout(getMess, 1000);
+</script>
 </html>
