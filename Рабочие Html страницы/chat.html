@@ -23,7 +23,7 @@
 </style>
 <body>
 <input type="text" id="messageInp" />
-<button onclick="addMess()">Отправить!</button>
+<button id="btnTime" onclick="addMess()">Отправить!</button>
 <div id="subMes" class="chatBox">
 </div>
 
@@ -31,20 +31,58 @@
 
 
 <script>
+
+    
     let key;
     let content;
     let list = document.getElementById('subMes');
 
+    let D = new Date();
+
+    let timeIf = D.getHours() + ":" + D.getMinutes() + ":" + D.getSeconds() + ":" + D.getMilliseconds();
+
     let localMess = [];
+
+    let btnTime = document.getElementById('btnTime');
+
+
+    console.log(timeIf);
+
+document.body.onload = function addAllMessages() {
+    let xhr = new XMLHttpRequest();
+
+    xhr.open("GET", "");
+
+    xhr.onload = function () {
+        let allMessages = JSON.parse(xhr.response);
+
+        for (key in allMessages) {
+            let newDiv = document.createElement('div');
+            newDiv.className = 'message';
+            newDiv.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${allMessages[key].Name} ${allMessages[key].Data}</h4><p>${allMessages[key].TextMessage}</p></div>`);
+            
+            console.log(list);
+
+            list.prepend(newDiv);
+        }
+    }
+
+    xhr.send();
+}
+
 
 
     function addMess() {
+        btnTime.disabled = 'true';
+        setInterval(btnTime.disabled = 'false', 400) 
+
         let message = document.getElementById('messageInp').value;
         console.log(message);
 
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://10.1.0.48:1337/main');
         xhr.send(message);
+
     }
 
     function openChanal(content) {
@@ -58,21 +96,25 @@
             
             console.log(xhr.response);
 
+
             if (typeof content == "object") {
+                if (content.Data === timeIf) {
+                    for (key in content) {
+                        let newDiv = document.createElement('div');
+                        newDiv.className = 'message';
+                        newDiv.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${content[key].Name} ${content[key].Data}</h4><p>${content[key].TextMessage}</p></div>`);
+                        
+                        console.log(list);
 
-                for (key in content) {
-                    let newDiv = document.createElement('div');
-                    newDiv.className = 'message';
-                    newDiv.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${content[key].Name} ${content[key].Data}</h4><p>${content[key].TextMessage}</p></div>`);
-
-                    console.log(list);
+                        list.prepend(newDiv);
                     }
+                }
             }
             
         }
             xhr.send();
     }
  
-    setTimeout(openChanal, 1000);
+    setInterval(openChanal, 100);
 </script>
 </html>
