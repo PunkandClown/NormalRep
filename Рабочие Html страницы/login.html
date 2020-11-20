@@ -2,44 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Login-page</title>
 </head>
+<style>
+    body {
+        background-image: url(https://aquaprint.ru/image/cache/data/shop/films/omon-green-600-0-2-4-600x450.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .form-login {
+        margin: 0 auto;
+        width: 350px;
+        height: 400px;
+        border: 1px solid gray;
+        background: linear-gradient( lightgreen, gray, lightgray);
+        border-bottom-left-radius: 10%;
+        border-bottom-right-radius: 10%;
+        border-top-left-radius: 13%;
+        border-top-right-radius: 13%;
+    }
+
+    span {
+        margin-left: 20px;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    button {
+        margin-left: 40px;
+        width: 100px;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background-color:   red;
+    }
+
+    .bc-image {
+        width: 350px;
+        height: 264px;
+        margin-top: 20px;
+        background-image: url(https://i.gifer.com/Ljpf.gif);
+        background-size: cover ;
+        border-bottom-left-radius: 13%;
+        border-bottom-right-radius: 13%;
+        border-top-left-radius: 20%;
+        border-top-right-radius: 20%;
+    }
+
+    .form-block {
+        margin-left: 85px;
+    }
+
+    input {
+        height: 20px;
+        margin-top: 10px;
+    }
+
+    input:active {
+        color: blue;
+    }
+</style>
 <body>
-    <p>
-        <label for="NN">Введите логин</label>
+
+<div class="form-login">
+
+    <div class="form-block">
+        <p>
+            <span>Введите логин:</span> <br>
             <input type="name" id="NN">
-    </p>
-
-    <p>
-        <label for="pass">Введите пароль</label>
+        </p>
+        <p>
+            <span>Введите пароль:</span> <br>
             <input type="password" id="pass">
-    </p>
+        </p>
+        <button onclick="start()">Войти</button>
+    </div>
+    <div class="bc-image"></div>
+</div>
 
-    <button onclick="start()">Войти</button>
+
 </body>
-    <script>
-
+<script>
+    function start () {
         let xhr = new XMLHttpRequest();
 
-        function start () {
+        let NN = document.getElementById('NN').value;
+        let pass = document.getElementById('pass').value;
 
-            let NN = document.getElementById('NN').value;
-            let pass = document.getElementById('pass').value;
+        let sending = '{' + NN + ',' + pass + '}';
 
-            let sending = '{' + NN + ',' + pass + '}';
+        xhr.open('POST', 'http://10.1.0.48:1337/login');
 
-            xhr.open('POST', 'http://10.1.0.48:1337/login');
-
-            xhr.send(sending);
-
-            xhr.onload = function () {
-                if (xhr.status === 202) {
-                    alert('Вы вошли!');
-                    window.location.href = '/main';
-                } else {
-                    alert('Логин или пароль не верный, попробуйте снова!');
-                }
+        xhr.onload = function () {
+            if (xhr.status === 202) {
+                console.log("Так точно!");
+                window.location.href = '/main';
+            } else {
+                console.log("Не по уставу!");
             }
         }
-    </script>
+        xhr.send(sending)
+    }
+</script>
 </html>

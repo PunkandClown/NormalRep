@@ -4,6 +4,9 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -17,8 +20,16 @@ public class MyHttpHandler implements HttpHandler {
     public String  index = "Рабочие Html страницы\\index.html";
     public static String login = "Рабочие Html страницы\\login.html";
     public static String  main = "Рабочие Html страницы\\main.html";
-
     public static Map<Integer, Message> AllMessage = new HashMap<>();
+    public static Connection conn;
+    static {
+        try {
+            conn = BDconnection();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         System.getProperty("mk.dir");
@@ -35,13 +46,28 @@ public class MyHttpHandler implements HttpHandler {
                 }
                 break;
             case "/login":
-                caseLogin(httpExchange, RequestMeth);
+                try {
+                    caseLogin(httpExchange, RequestMeth);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 break;
             case "/main":
-                caseMain(httpExchange, RequestMeth, date);
+                try {
+                    caseMain(httpExchange, RequestMeth, date);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 break;
             case  "/CSS":
                 handleCssResponse(httpExchange, indexCSS, 200);
+                break;
+            case "/allmessage":
+                try {
+                    handleResponseForMessage(httpExchange, DBhelper.getAllMessage(conn,2));
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 break;
             default:
                 System.out.println("Дефолт");
@@ -49,6 +75,15 @@ public class MyHttpHandler implements HttpHandler {
                 break;
         }
     }
+
+    public static Connection BDconnection() throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=UTC";
+        String usernameConnection = "root";
+        String passwordConnection = "Qwerty123456";
+        conn = DriverManager.getConnection(url, usernameConnection, passwordConnection);
+        return conn;
+    }
+
     public static void handleCssResponse(HttpExchange httpExchange, String index, int codeHeader)  throws IOException {
         httpExchange.getResponseHeaders().put("Content-Type", Collections.singletonList("text/css; charset=windows-1251"));
         byte[] arrayss = Files.readAllBytes(Paths.get(index));
@@ -85,21 +120,31 @@ public class MyHttpHandler implements HttpHandler {
         String nick = st.nextToken().trim();
         String name = st.nextToken().trim();
         String pass = st.nextToken().trim();
-        BDclass.BDhandlerUserSet(nick,name,pass, httpExchange,0);
+        if(DBhelper.PutBasePerson(conn,nick,name,pass)){
+            MyHttpHandler.handleResponse(httpExchange, MyHttpHandler.login, 200);
+        } else {
+            MyHttpHandler.handleResponse(httpExchange, MyHttpHandler.login, 204);
+        }
     }
-    public static void caseLogin(HttpExchange httpExchange, String RequestMeth) throws IOException {
+    public static void caseLogin(HttpExchange httpExchange, String RequestMeth) throws IOException, SQLException {
         if("GET".equals(RequestMeth)) {
             handleResponse(httpExchange, login,200);
         }else if("POST".equals(RequestMeth)){
             LoginTrueFalse(BufferInGetRequestBody(httpExchange), httpExchange);
         }
     }
-    public static void LoginTrueFalse(String  information, HttpExchange httpExchange) throws IOException {
+    public static void LoginTrueFalse(String  information, HttpExchange httpExchange) throws IOException, SQLException {
         String Str = information.substring(information.indexOf('{') +1, information.lastIndexOf('}'));
         StringTokenizer st = new StringTokenizer(Str, ",");
         String nickname = st.nextToken().trim();
         String pass = st.nextToken().trim();
-        BDclass.BDhandlerUserSet(nickname, "name", pass, httpExchange, 1);
+        if(DBhelper.LoginTrueFalse(conn, nickname, pass)){
+            String newCookie = "Cock"+nickname+"boo";
+            HashmapClass.NickAndCookie.put(nickname, newCookie);
+            MyHttpHandler.CookieSetter(httpExchange, newCookie, "202", MyHttpHandler.main);
+        } else {
+            MyHttpHandler.handleResponse(httpExchange, MyHttpHandler.login, 204);
+        }
     }
     public static void CookieSetter(HttpExchange httpExchange, String Cookie, String code, String page) throws IOException {
         httpExchange.getResponseHeaders().put("Set-Cookie",
@@ -108,65 +153,30 @@ public class MyHttpHandler implements HttpHandler {
         httpExchange.sendResponseHeaders(Integer.parseInt(code), arrayss.length);
         handleOutputStream(httpExchange,arrayss);
     }
-    public static void caseMain(HttpExchange httpExchange, String RequestMete, String date) throws IOException {
+    public static void caseMain(HttpExchange httpExchange, String RequestMete, String date) throws IOException, SQLException {
         if(httpExchange.getRequestHeaders().containsKey("Cookie")) {
             String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
                     .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
-
             if(HashmapClass.NickAndCookie.containsValue(cookieInBrowser)) {
                 if ("GET".equals(RequestMete)) {
                     handleResponse(httpExchange, main, 200);
-                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage,2));
                 } else if ("POST".equals(RequestMete)) {
-
-
                     StringBuilder SBB = new StringBuilder();
                     SBB.append(BufferInGetRequestBody(httpExchange));
-                    System.out.println(SBB);
                     if(!SBB.toString().equals("")){
-                        Message message = new Message(HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
+                        DBhelper.putMessage(conn,HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
                                 cookieInBrowser), date, SBB.toString());
-                        AllMessage.put(keymessage, message);
-                        handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
-                        if (AllMessage.size() > 9) {
-                            for (int i = 0; i < 10; i++) {
-                                AllMessage.remove(i);
-                                keymessage--;
-                            }
-                        }
-                        keymessage++;
+                        System.out.println(DBhelper.getAllMessage(conn,1));
                     }
-                    handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
+                    handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
+                    //handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
                 }
             }
         } else {
             handleResponse(httpExchange, login, 200);
         }
     }
-    public static String SBAllMessageJson(Map map, int OneMessageElseAll){
-        StringBuilder SB = new StringBuilder();
-        SB.append("[\n");
-        if(OneMessageElseAll == 1){
-            int counter = 0;
-            for(int i = 0; i < map.size(); i++){
-                counter = i;
-            }
-            String ParseMessage = map.get(counter).toString();
-            SB.append(ParseMessage);
-            System.out.println(ParseMessage);
-        } else if (OneMessageElseAll == 2){
-            for(int a = 0; a < map.size(); a++){
-            String ParseMessage = map.get(a).toString();
-            if(a != 0){
-                SB.append(",\n");
-            }
-            SB.append(ParseMessage);
 
-        }
-        }
-        SB.append("\n]");
-        return SB.toString();
-    }
     public static void handleResponseForMessage(HttpExchange httpExchange, String numb)  throws IOException {
         byte[] arrayss = numb.getBytes();
         httpExchange.sendResponseHeaders(200, arrayss.length);

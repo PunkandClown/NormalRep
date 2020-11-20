@@ -1,6 +1,7 @@
 import java.util.Date;
 
 public class Message {
+
     private String Name;
     private String Data;
     private String TextMess;
@@ -12,6 +13,6 @@ public class Message {
     }
 
     public String toString(){
-        return  "{\n" + "\"" + "Name" + "\": " + "\"" + Name + "\"" + ",\n" + "\"" + "Data" + "\": " + "\"" + Data + "\"" + ",\n" + "\"" + "TextMessage"+ "\": " + "\"" + TextMess + "\"\n" + "}";
+        return  "{\n" + "\"" + "Name" + "\": " + "\"" + Name + "\"" + ",\n" + "\"" + "Data" + "\": " + "\"" + Data + "\"" + ",\n" + "\"" + "TextMessage"+ "\": " + "\"" + TextMess + "\"\n";
     }
 }

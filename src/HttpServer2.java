@@ -11,6 +11,7 @@ public class HttpServer2 {
         server.createContext("/login", new  MyHttpHandler());
         server.createContext("/main", new  MyHttpHandler());
         server.createContext("/CSS", new  MyHttpHandler());
+        server.createContext("/allmessage", new  MyHttpHandler());
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         server.setExecutor(threadPoolExecutor);
         server.start();

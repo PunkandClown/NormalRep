@@ -23,7 +23,7 @@
 </style>
 <body>
 <input type="text" id="messageInp" />
-<button onclick="addMess()">Отправить!</button>
+<button id="btnTime" onclick="addMess()">Отправить!</button>
 <div id="subMes" class="chatBox">
 </div>
 
@@ -33,15 +33,42 @@
 <script>
     let key;
     let content;
+    let list = document.getElementById('subMes');
+    let D = new Date();
+    let lastTime = 0;
+
+
+    window.onload = function addAllMessages() {
+        let xhr = new XMLHttpRequest();
+
+        xhr.open("GET", "http://10.1.0.48:1337/allmessages");
+
+        xhr.onload = function () {
+            console.log(xhr.response);
+            let allMessages = JSON.parse(xhr.response);
+            console.log(allMessages);
+            for (key in allMessages) {
+                list.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${allMessages[key].Nickname} ${allMessages[key].Time}</h4><p>${allMessages[key].TextMessage}</p></div>`);
+
+                console.log(list);
+            }
+        }
+
+        xhr.send();
+    }
+
 
 
     function addMess() {
+
+
         let message = document.getElementById('messageInp').value;
         console.log(message);
 
         let xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://10.1.0.48:1337/main');
         xhr.send(message);
+
     }
 
     function openChanal() {
@@ -50,141 +77,32 @@
         xhr.open('POST', 'http://10.1.0.48:1337/main', true);
 
         xhr.onload = function () {
-
-            let list = document.getElementById('subMes');
-
-            content = JSON.parse(xhr.response);
             console.log(xhr.response);
+            content = JSON.parse(xhr.response);
 
-            for (key in content) {
+            console.log(xhr.response);
+            let timeIf = D.getHours() + ":" + D.getMinutes() + ":" + D.getSeconds();
+            if (typeof content == "object") {
 
-                let newDiv = document.createElement('div');
-                newDiv.className = 'message';
-                newDiv.innerHTML = `
-                                <h4>Name:${content[key].Name}  ${content[key].Data}</h4>
-                                <p>${content[key].TextMessage}</p>
-                    `;
+                for (key in content) {
+                    lastTime = content[key].Time;
+                    console.log(content[key].Time);
+                    console.log(lastTime);
 
+                        if (content[key].Time > lastTime) {
+                            console.log('ауф')
+                            list.insertAdjacentHTML("beforeend", `<div class="message"><h4>Name:${content[key].Nickname}${content[key].Time}</h4><p>${content[key].TextMessage}</p></div>`);
+                            lastTime = content[key].Time;
+                            console.log(list);
 
-                list.prepend(newDiv);
-
+                    }
+                }
             }
+
         }
-            xhr.send();
+        xhr.send();
     }
+
     setInterval(openChanal, 1000);
-
-
-
-
-
-
-
-
-
-
-    // function Form(form) {
-
-    //     function sendMes(message) {
-    //         let xhr = new XMLHttpRequest();
-    //         xhr.open('POST', 'http://10.1.0.48:1337/main', true);
-
-    //         xhr.send(message);
-
-    //     }
-
-    //     form.onsubmit = function () {
-    //         let message = form.message.value;
-
-    //         console.log(message);
-    //         if (message) {
-    //             sendMes(message);
-    //         }
-    //         return false;
-    //     }
-    // }
-
-    // function subMes (elem) {
-    //     function sub() {
-    // let xhr = new XMLHttpRequest();
-
-    //         xhr.onreadystatechange = function () {
-    //             if (this.readyState != 4) return
-
-    //             if (this.status == 200) {
-    //             if (this.responseText) {
-    //             // сервер может закрыть соединение без ответа при перезагрузке
-    //             showMessage(this.responseText);
-    //                 }
-    //                 subMes();
-    //             return;
-    //             }
-    //             if (this.status != 502) {
-    //     // 502 - прокси ждал слишком долго, надо пересоединиться, это не ошибка
-    //     showMessage(this.statusText); // показать ошибку
-    //   }
-
-    //   setTimeout(subscribe, 1000); // попробовать ещё раз через 1 сек
-    // }
-    // xhr.open("GET", 'http://10.1.0.48:1337/main', true);
-    //     xhr.send();
-    //   }
-
-    //   subMes();
-
-    // }
-
-
-    // function onloadMes() {
-    //     let key;
-
-    //     let list = document.getElementById
-
-    //         let content = JSON.parse(xhr.response);
-
-    //         let newDiv = document.createElement('div');
-    //         newDiv.className = 'message';
-
-    //     for (key in content) {
-    //                 newDiv.innerHTML = `
-    //                 <li>
-    //                     <h4>${content[key].Name}</h4>
-    //                     <h5>${content[key].Data}</h5>
-    //                     <p>${content[key].TextMessage}</p>
-    //                 </li>
-    //         `;
-    //             }
-    //             list.append(newDiv);
-    // }
-
-    // document.body.onload = function() {
-    //     let xhr = new XMLHttpRequest;
-
-    //     xhr.open("GET", "http://10.1.0.48:1337/main");
-
-    //     xhr.onload = function () {
-    //          onloadMes();
-    //         }
-
-    //     xhr.send();
-    // }
-
-
-
-    //     function start() {
-    //         let xhr = new XMLHttpRequest();
-    //         let messT = document.getElementById('btnst').value;
-
-    //         xhr.open("POST", 'http://10.1.0.48:1337/main');
-
-    //         xhr.onload = function () {
-    //             onloadMes();
-    //         }
-    //         xhr.send(messT);
-    //     }
-
-    // new form(document.forms.publish, 'publish');
-
-
 </script>
 </html>
