@@ -33,6 +33,7 @@
 <script>
     let key;
     let content;
+    let list = document.getElementById('subMes');
 
     let localMess = [];
 
@@ -53,33 +54,25 @@
 
         xhr.onload = function (content) {
 
-            let list = document.getElementById('subMes');
-
             content = JSON.parse(xhr.response);
             
             console.log(xhr.response);
 
             if (typeof content == "object") {
 
-            for (key in content) {
+                for (key in content) {
                     let newDiv = document.createElement('div');
                     newDiv.className = 'message';
-                    newDiv.innerHTML += `
-                    <h4>Name:${content[key].Name}  ${content[key].Data}</h4>
-                    <p>${content[key].TextMessage}</p>
-                `;
-                localMess.push(content);
+                    newDiv.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${content[key].Name} ${content[key].Data}</h4><p>${content[key].TextMessage}</p></div>`);
 
-                list.prepend(newDiv);
-                console.log(list);
-                }
+                    console.log(list);
+                    }
             }
             
         }
             xhr.send();
     }
-
-    
+ 
     setTimeout(openChanal, 1000);
 </script>
 </html>
