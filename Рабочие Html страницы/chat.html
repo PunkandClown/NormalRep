@@ -34,6 +34,8 @@
     let key;
     let content;
 
+    let localMess = [];
+
 
     function addMess() {
         let message = document.getElementById('messageInp').value;
@@ -56,27 +58,27 @@
             content = JSON.parse(xhr.response);
             
             console.log(xhr.response);
-            getMess();
+
+            if (typeof content == "object") {
+
+            for (key in content) {
+                    let newDiv = document.createElement('div');
+                    newDiv.className = 'message';
+                    newDiv.innerHTML = `
+                    <h4>Name:${content[key].Name}  ${content[key].Data}</h4>
+                    <p>${content[key].TextMessage}</p>
+                `;
+                localMess.push(content);
+
+                list.prepend(newDiv);
+                }
+            }
             
         }
             xhr.send();
     }
 
-    function getMess(content) {
-        if (typeof content == "object") {
-
-        for (key in content) {
-                let newDiv = document.createElement('div');
-                newDiv.className = 'message';
-                newDiv.innerHTML = `
-                <h4>Name:${content[key].Name}  ${content[key].Data}</h4>
-                <p>${content[key].TextMessage}</p>
-                `;
-            
-                list.prepend(newDiv);
-            }
-        }
-    }
-    setTimeout(getMess, 1000);
+    
+    setTimeout(openChanal, 1000);
 </script>
 </html>
