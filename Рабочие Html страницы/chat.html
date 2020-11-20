@@ -51,7 +51,7 @@
 document.body.onload = function addAllMessages() {
     let xhr = new XMLHttpRequest();
 
-    xhr.open("GET", "");
+    xhr.open("GET", "http://10.1.0.48:1337/allmessages");
 
     xhr.onload = function () {
         let allMessages = JSON.parse(xhr.response);
