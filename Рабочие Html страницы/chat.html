@@ -49,13 +49,14 @@
 
         xhr.open('POST', 'http://10.1.0.48:1337/main', true);
 
-        xhr.onload = function () {
+        xhr.onload = function (content) {
 
             let list = document.getElementById('subMes');
 
             content = JSON.parse(xhr.response);
             
             console.log(xhr.response);
+            getMess();
             
         }
             xhr.send();
