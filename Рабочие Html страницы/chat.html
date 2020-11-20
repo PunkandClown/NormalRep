@@ -64,13 +64,14 @@
             for (key in content) {
                     let newDiv = document.createElement('div');
                     newDiv.className = 'message';
-                    newDiv.innerHTML = `
+                    newDiv.innerHTML += `
                     <h4>Name:${content[key].Name}  ${content[key].Data}</h4>
                     <p>${content[key].TextMessage}</p>
                 `;
                 localMess.push(content);
 
                 list.prepend(newDiv);
+                console.log(list);
                 }
             }
             
