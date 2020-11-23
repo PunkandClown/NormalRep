@@ -68,7 +68,7 @@ class DBhelper {
     static boolean callRegister(Connection conn, String Nickname) throws SQLException {
         CallableStatement callableStatement = conn.prepareCall("call userNicknameEx(?,?)");
         callableStatement.setString(1, Nickname);
-        callableStatement.registerOutParameter(2, Types.BOOLEAN);
+        callableStatement.registerOutParameter(2, Types.TINYINT);
         callableStatement.execute();
         return callableStatement.getBoolean(2);
     }
@@ -76,7 +76,7 @@ class DBhelper {
         CallableStatement callableStatement = conn.prepareCall("call userNicknamePassEx(?,?,?)");
         callableStatement.setString(1, Nickname);
         callableStatement.setString(2, Password);
-        callableStatement.registerOutParameter(3, Types.BOOLEAN);
+        callableStatement.registerOutParameter(3, Types.TINYINT);
         callableStatement.execute();
         return callableStatement.getBoolean(3);
     }

@@ -23,7 +23,7 @@
 </style>
 <body>
 <input type="text" id="messageInp" />
-<button id="btnTime" onclick="addMess()">Отправить!</button>
+<button id="" onclick="addMess()">Отправить!</button>
 <div id="subMes" class="chatBox">
 </div>
 
@@ -35,66 +35,54 @@
     let content;
     let list = document.getElementById('subMes');
     let D = new Date();
-    let lastTime = 0;
-
+    let lasttime;
 
     window.onload = function addAllMessages() {
         let xhr = new XMLHttpRequest();
-
-        xhr.open("GET", "http://10.1.0.48:1337/allmessages");
-
+        xhr.open("GET", "/allmessages");
         xhr.onload = function () {
             console.log(xhr.response);
             let allMessages = JSON.parse(xhr.response);
             console.log(allMessages);
             for (key in allMessages) {
-                list.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${allMessages[key].Nickname} ${allMessages[key].Time}</h4><p>${allMessages[key].TextMessage}</p></div>`);
-
+                list.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${allMessages[key].Nickname}
+                                        ${allMessages[key].Time}</h4><p>${allMessages[key].TextMessage}</p></div>`);
                 console.log(list);
+                lasttime = allMessages[key].Time;
             }
         }
-
         xhr.send();
     }
 
 
 
     function addMess() {
-
-
         let message = document.getElementById('messageInp').value;
         console.log(message);
-
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://10.1.0.48:1337/main');
+        xhr.open('POST', '/main');
         xhr.send(message);
-
     }
-
     function openChanal() {
         let xhr = new XMLHttpRequest();
-
-        xhr.open('POST', 'http://10.1.0.48:1337/main', true);
-
+        xhr.open('POST', '/main', true);
         xhr.onload = function () {
-            console.log(xhr.response);
             content = JSON.parse(xhr.response);
-
-            console.log(xhr.response);
-            let timeIf = D.getHours() + ":" + D.getMinutes() + ":" + D.getSeconds();
             if (typeof content == "object") {
-
                 for (key in content) {
-                    lastTime = content[key].Time;
-                    console.log(content[key].Time);
-                    console.log(lastTime);
-
-                        if (content[key].Time > lastTime) {
-                            console.log('ауф')
-                            list.insertAdjacentHTML("beforeend", `<div class="message"><h4>Name:${content[key].Nickname}${content[key].Time}</h4><p>${content[key].TextMessage}</p></div>`);
-                            lastTime = content[key].Time;
-                            console.log(list);
-
+                    console.log(lasttime);
+                    let nowdate;
+                    nowdate = content[key].Time
+                    console.log(nowdate)
+                    console.log(nowdate > lasttime)
+                    if (nowdate <= lasttime) {
+                    } else {
+                        console.log('acces')
+                        lasttime = nowdate;
+                        console.log('ауф')
+                        list.insertAdjacentHTML("beforeend", `<div class="message"><h4>Name:${content[key].Nickname}${content[key].Time}</h4><p>${content[key].TextMessage}</p></div>`);
+                        lastTime = content[key].Time;
+                        console.log(list);
                     }
                 }
             }

@@ -12,10 +12,6 @@ import java.util.*;
 
 
 public class MyHttpHandler implements HttpHandler {
-    public static int keymessage = 0;
-//    public String  index = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\index.html";
-//    public static String login = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\login.html";
-//    public static String  main = "C:\\Users\\Павел\\IdeaProjects\\NormalRep\\Рабочие Html страницы\\main.html";
     public static String indexCSS = "Рабочие Html страницы\\indexCSS.css";
     public String  index = "Рабочие Html страницы\\index.html";
     public static String login = "Рабочие Html страницы\\login.html";

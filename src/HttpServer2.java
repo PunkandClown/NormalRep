@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class HttpServer2 {
     public static void main(String[] arg) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress("10.1.0.48", 1337), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress("192.168.0.105", 1337), 0);
         server.createContext("/text", new  MyHttpHandler());
         server.createContext("/login", new  MyHttpHandler());
         server.createContext("/main", new  MyHttpHandler());
