@@ -30,6 +30,17 @@ class DBhelper {
             System.out.println(resultSet.getString("Nickname"));
         }
     }
+    static String getTimelastMessage(Connection conn) throws SQLException {
+        PreparedStatement preparedStatement = conn.prepareStatement("select * from messagetable order by idMessageTable DESC LIMIT 1");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        StringBuilder SB = new StringBuilder();
+        while (resultSet.next()){
+            SB.append(resultSet.getString("Time"));
+        }
+        return SB.toString();
+    }
+
+
     static void putMessage(Connection conn, String name, String data, String textMessage) throws SQLException {
         PreparedStatement preparedStatement = conn.prepareStatement("insert into messagetable(Nickname,Time,TextMessage) values(?,?,?)");
         preparedStatement.setString(1,name);

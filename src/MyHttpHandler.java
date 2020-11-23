@@ -25,6 +25,8 @@ public class MyHttpHandler implements HttpHandler {
             throwables.printStackTrace();
         }
     }
+    public static int primeMessagekey;
+    public static int timeMessagekey;
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -162,9 +164,15 @@ public class MyHttpHandler implements HttpHandler {
                     if(!SBB.toString().equals("")){
                         DBhelper.putMessage(conn,HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
                                 cookieInBrowser), date, SBB.toString());
+                        primeMessagekey++;
                         System.out.println(DBhelper.getAllMessage(conn,1));
                     }
-                    handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
+                    if (primeMessagekey > timeMessagekey) {
+                        primeMessagekey = timeMessagekey;
+                        handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
+                    }
+                    String timelastmessagejson = "{"+"\"" + DBhelper.getTimelastMessage(conn) + "\""+"}";
+                    handleResponseForMessage(httpExchange, timelastmessagejson);
                     //handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
                 }
             }

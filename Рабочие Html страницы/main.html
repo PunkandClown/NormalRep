@@ -14,13 +14,17 @@
     .leftpanel{
         float: left;
         min-width: 200px;
-        height: 920px;
+        height: 631px;
         background-color: #454545;
         border: #454545 2px solid;
     }
-    .chatheader{
+    .shrift{
         color: aliceblue;
         font-family: fantasy;
+        font-size: 30px;
+        margin-left: 15px;
+    }
+    .chatheader{
         float: left;
         height: 80px;
         width: 590px;
@@ -29,10 +33,14 @@
         border: #131313 2px solid;
     }
     .inpclass{
-        width: 240px;
+        width: 483px;
         margin-left: 13px;
+        margin-bottom: 10px;
         border-radius: 2px;
         background-color: #727272;
+    }
+    .bottmclass{
+        background-color: red;
     }
     .chatBox {
         height: 400px;
@@ -61,11 +69,12 @@
 <body>
 <div class="leftpanel">
 </div>
-<div class="chatheader"> <p>GroupChat</p> </div>
+<div class="chatheader"> <p class="shrift">GroupChat</p> </div>
 <div id="subMes" class="chatBox">
 </div>
 <input type="text" id="messageInp" class="inpclass"/>
-<button id="" onclick="addMess()">Отправить!</button>
+<button id="" onclick="addMess()" class="bottmclass">Отправить!</button>
+<div class="chatheader"> <p class="shrift">Kirillgay</p> </div>
 </body>
 
 
