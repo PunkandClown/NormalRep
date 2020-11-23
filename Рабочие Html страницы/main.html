@@ -6,27 +6,66 @@
     <title>Chat</title>
 </head>
 <style>
+    body{
+        height: 1200px;
+        width: 800px;
+        background-color: #292929;
+    }
+    .leftpanel{
+        float: left;
+        min-width: 200px;
+        height: 920px;
+        background-color: #454545;
+        border: #454545 2px solid;
+    }
+    .chatheader{
+        color: aliceblue;
+        font-family: fantasy;
+        float: left;
+        height: 80px;
+        width: 590px;
+        margin-bottom: 10px;
+        background-color: #131313;
+        border: #131313 2px solid;
+    }
+    .inpclass{
+        width: 240px;
+        margin-left: 13px;
+        border-radius: 2px;
+        background-color: #727272;
+    }
     .chatBox {
-        height: 350px;
-        width: 200px;
+        height: 400px;
+        width: 71%;
         display: flex;
+        margin-top: 10px;
+        margin-left: 220px;
+        padding: 13px 5px;
+        background-color: #727272;
         flex-direction: column-reverse;
         overflow-y: scroll;
     }
-
     .message {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        height: 25%;
+        width: 50%;
         display: flex;
+        background-color: #999999;
         flex-direction: column-reverse;
-        padding: 5px 10px;
-        border: 1px solid gray;
+        padding: 1px 2px;
+        border: 1px solid #999999;
+        border-radius: 5px;
     }
 </style>
 <body>
-<input type="text" id="messageInp" />
-<button id="" onclick="addMess()">Отправить!</button>
+<div class="leftpanel">
+</div>
+<div class="chatheader"> <p>GroupChat</p> </div>
 <div id="subMes" class="chatBox">
 </div>
-
+<input type="text" id="messageInp" class="inpclass"/>
+<button id="" onclick="addMess()">Отправить!</button>
 </body>
 
 
@@ -34,9 +73,7 @@
     let key;
     let content;
     let list = document.getElementById('subMes');
-    let D = new Date();
     let lasttime;
-
     window.onload = function addAllMessages() {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", "/allmessages");
@@ -45,17 +82,13 @@
             let allMessages = JSON.parse(xhr.response);
             console.log(allMessages);
             for (key in allMessages) {
-                list.insertAdjacentHTML ("beforeend", `<div class="message"><h4>Name:${allMessages[key].Nickname}
-                                        ${allMessages[key].Time}</h4><p>${allMessages[key].TextMessage}</p></div>`);
+                list.insertAdjacentHTML ("beforeend", `<div class="message"><p>${allMessages[key].TextMessage}</p><h4>Name:${allMessages[key].Nickname} time:${allMessages[key].Time}</h4></div>`);
                 console.log(list);
                 lasttime = allMessages[key].Time;
             }
         }
         xhr.send();
     }
-
-
-
     function addMess() {
         let message = document.getElementById('messageInp').value;
         console.log(message);
@@ -79,8 +112,7 @@
                     } else {
                         console.log('acces')
                         lasttime = nowdate;
-                        console.log('ауф')
-                        list.insertAdjacentHTML("beforeend", `<div class="message"><h4>Name:${content[key].Nickname}${content[key].Time}</h4><p>${content[key].TextMessage}</p></div>`);
+                        list.insertAdjacentHTML("beforeend", `<div class="message"><p>${content[key].TextMessage}</p><h4>Name:${content[key].Nickname} time:${content[key].Time}</h4></div>`);
                         lastTime = content[key].Time;
                         console.log(list);
                     }
