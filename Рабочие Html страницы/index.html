@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-    <link href="http://192.168.0.105:1337/CSS" rel="stylesheet" type="text/css">
+    <link href="/CSS" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="reg">
@@ -35,9 +35,7 @@
             let name = document.getElementById('name').value;
             let NN = document.getElementById('NN').value;
             let pass = document.getElementById('pass').value;
-
-
-            xhr.open('POST', 'http://192.168.0.105:1337/text');
+            xhr.open('POST', '/text');
 
             let sending = '{' + name + ',' + NN + ',' + pass + '}';
 

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>Аккаунт</p>
+<button onclick="addPersonalMess()">Отправить личное сообщение</button>
+<div id="subMes">
+</div>
+</body>
+<script>
+    start();
+    function addPersonalMess(){
+        window.location.href = '/lschat';
+    }
+    function start () {
+        let xhr = new XMLHttpRequest();
+        let list = document.getElementById('subMes');
+        let id = location.search.slice(1).split("&")[0].split("=")[1]
+        console.log(id)
+        xhr.open('POST', '/users?Nickname='+id, true);
+        xhr.send()
+        xhr.onload = function () {
+            console.log("Получаем")
+            console.log(xhr.response)
+            let user = JSON.parse(xhr.response);
+            list.insertAdjacentHTML ("afterbegin", `<div>
+        <h4>Nickname:${user.Nickname} name:${user.Name}</h4></div>`);
+        }
+    }
+</script>
+</html>

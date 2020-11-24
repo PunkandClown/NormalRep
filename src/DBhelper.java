@@ -23,6 +23,21 @@ class DBhelper {
     public static boolean LoginTrueFalse(Connection conn, String Nickname, String Password) throws SQLException{
         return callLogin(conn, Nickname, Password);
     }
+    static String getUser(Connection conn, String nicknameUserForInfo) throws SQLException {
+        PreparedStatement preparedStatement = conn.prepareStatement("select * from users where Nickname = ?");
+        preparedStatement.setString(1, nicknameUserForInfo);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        StringBuilder SB = new StringBuilder();
+        while (resultSet.next()) {
+            SB.append("{\n");
+            SB.append("\"Nickname\":" + "\"" + resultSet.getString("Nickname") + "\"" + ",\n");
+            SB.append("\"Name\":" + "\"" + resultSet.getString("Name") + "\"" + "\n");
+            SB.append("}");
+        }
+        return SB.toString();
+    }
+
+
     static void get(Connection conn) throws SQLException {
         PreparedStatement preparedStatement = conn.prepareStatement("select * from users");
         ResultSet resultSet = preparedStatement.executeQuery();

@@ -42,6 +42,12 @@
     .bottmclass{
         background-color: red;
     }
+    .aaa{
+        text-decoration: none;
+        color: #131313;
+        margin-top: -10px;
+        margin-bottom: -10px;
+    }
     .chatBox {
         height: 400px;
         width: 71%;
@@ -54,13 +60,14 @@
         overflow-y: scroll;
     }
     .message {
+        word-wrap: break-word;
         margin-top: 5px;
         margin-bottom: 5px;
-        height: 25%;
+        min-height: 25%;
         width: 50%;
         display: flex;
-        background-color: #999999;
         flex-direction: column-reverse;
+        background-color: #999999;
         padding: 1px 2px;
         border: 1px solid #999999;
         border-radius: 5px;
@@ -91,7 +98,11 @@
             let allMessages = JSON.parse(xhr.response);
             console.log(allMessages);
             for (key in allMessages) {
-                list.insertAdjacentHTML ("beforeend", `<div class="message"><p>${allMessages[key].TextMessage}</p><h4>Name:${allMessages[key].Nickname} time:${allMessages[key].Time}</h4></div>`);
+                list.insertAdjacentHTML ("afterbegin", `<div class="message">
+                                                        <p>${allMessages[key].TextMessage}</p>
+                                                        <a href="http://10.1.0.48:1337/users?Nickname=${allMessages[key].Nickname}" class="aaa">Name:${allMessages[key].Nickname}</a>
+                                                        <h4>time: ${allMessages[key].Time}</h4>
+                                                         </div>`);
                 console.log(list);
                 lasttime = allMessages[key].Time;
             }
@@ -121,7 +132,7 @@
                     } else {
                         console.log('acces')
                         lasttime = nowdate;
-                        list.insertAdjacentHTML("beforeend", `<div class="message"><p>${content[key].TextMessage}</p><h4>Name:${content[key].Nickname} time:${content[key].Time}</h4></div>`);
+                        list.insertAdjacentHTML("afterbegin", `<div class="message"><p>${content[key].TextMessage}</p> <a href="http://10.1.0.48:1337/users?Nickname=${content[key].Nickname}" class="aaa"> Name:${content[key].Nickname}</a>  <h4>time:${content[key].Time}</h4></div>`);
                         lastTime = content[key].Time;
                         console.log(list);
                     }

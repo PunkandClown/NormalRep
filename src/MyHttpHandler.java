@@ -16,6 +16,7 @@ public class MyHttpHandler implements HttpHandler {
     public String  index = "Рабочие Html страницы\\index.html";
     public static String login = "Рабочие Html страницы\\login.html";
     public static String  main = "Рабочие Html страницы\\main.html";
+    public static String  users = "Рабочие Html страницы\\users.html";
     public static Map<Integer, Message> AllMessage = new HashMap<>();
     public static Connection conn;
     static {
@@ -33,32 +34,41 @@ public class MyHttpHandler implements HttpHandler {
         System.getProperty("mk.dir");
         LocalDateTime localitytime = LocalDateTime.now();
         String url = httpExchange.getHttpContext().getPath();
-        String RequestMeth = httpExchange.getRequestMethod();
+        String requestMeth = httpExchange.getRequestMethod();
         String date = localitytime.getHour() + ":" + localitytime.getMinute() + ":" +localitytime.getSecond();
         switch (url){
             case "/text":
-                if ("GET".equals(RequestMeth)) {
+                if ("GET".equals(requestMeth)) {
                     handleResponse(httpExchange, index,200);
-                }else if("POST".equals(RequestMeth)) {
+                }else if("POST".equals(requestMeth)) {
                     handlePersonBaseTokenizer(httpExchange);
                 }
                 break;
             case "/login":
                 try {
-                    caseLogin(httpExchange, RequestMeth);
+                    caseLogin(httpExchange, requestMeth);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
                 break;
             case "/main":
                 try {
-                    caseMain(httpExchange, RequestMeth, date);
+                    caseMain(httpExchange, requestMeth, date);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
                 break;
             case  "/CSS":
                 handleCssResponse(httpExchange, indexCSS, 200);
+                break;
+            case "/users":
+                String query = httpExchange.getRequestURI().getQuery();
+                String[] split = query.split("=", 2);
+                try {
+                    caseUsersInfo(split[1], httpExchange, requestMeth);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 break;
             case "/allmessage":
                 try {
@@ -111,6 +121,17 @@ public class MyHttpHandler implements HttpHandler {
         }
         return stringBuilder.toString();
     }
+    public static void caseUsersInfo(String query, HttpExchange httpExchange, String RequestMeth) throws SQLException, IOException {
+        StringBuilder SB = new StringBuilder(query);
+        if("GET".equals(RequestMeth)) {
+              handleResponse(httpExchange, users, 200);
+        }else if("POST".equals(RequestMeth)){
+            if(DBhelper.callRegister(conn, SB.toString())){
+                String postedUser = DBhelper.getUser(conn, SB.toString());
+                handleResponseForMessage(httpExchange, postedUser);
+            }
+        }
+    }
     public static void handlePersonBaseTokenizer(HttpExchange httpExchange)  throws IOException {
         String information = BufferInGetRequestBody(httpExchange);
         String Str = information.substring(information.indexOf('{') +1, information.lastIndexOf('}'));
@@ -153,6 +174,7 @@ public class MyHttpHandler implements HttpHandler {
     }
     public static void caseMain(HttpExchange httpExchange, String RequestMete, String date) throws IOException, SQLException {
         if(httpExchange.getRequestHeaders().containsKey("Cookie")) {
+            List<String> id = httpExchange.getRequestHeaders().get("id");
             String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
                     .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
             if(HashmapClass.NickAndCookie.containsValue(cookieInBrowser)) {
@@ -164,15 +186,18 @@ public class MyHttpHandler implements HttpHandler {
                     if(!SBB.toString().equals("")){
                         DBhelper.putMessage(conn,HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
                                 cookieInBrowser), date, SBB.toString());
-                        primeMessagekey++;
+                        handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
+                        //primeMessagekey++;
                         System.out.println(DBhelper.getAllMessage(conn,1));
                     }
-                    if (primeMessagekey > timeMessagekey) {
-                        primeMessagekey = timeMessagekey;
-                        handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
-                    }
-                    String timelastmessagejson = "{"+"\"" + DBhelper.getTimelastMessage(conn) + "\""+"}";
-                    handleResponseForMessage(httpExchange, timelastmessagejson);
+//                    if (primeMessagekey > timeMessagekey) {
+//                        primeMessagekey = timeMessagekey;
+//                        handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
+//                    }
+//                    String timelastmessagejson = "{"+"\"Time\":" + "\"" + DBhelper.getTimelastMessage(conn) + "\""+"}";
+//                    handleResponseForMessage(httpExchange, timelastmessagejson);
+                    System.out.println(DBhelper.getAllMessage(conn,1));
+                    handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
                     //handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
                 }
             }
@@ -185,7 +210,7 @@ public class MyHttpHandler implements HttpHandler {
         byte[] arrayss = numb.getBytes();
         httpExchange.sendResponseHeaders(200, arrayss.length);
         handleOutputStream(httpExchange, arrayss);
-        System.out.println("Сообщения отправлены: " + numb);
+        System.out.println("Отправлено: " + numb);
     }
     public static String KeysValue(){
 //        Set<String> keys = AllMessage.keySet();
