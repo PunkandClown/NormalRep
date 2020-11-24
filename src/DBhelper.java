@@ -66,7 +66,7 @@ class DBhelper {
     static String getAllMessage(Connection conn, int idMessageinDB) throws SQLException {
         String SQL = "";
         if(idMessageinDB == 2){
-            SQL = "select * from messageTable";
+            SQL = "select * from messageTable DESC LIMIT 15";
         } else if(idMessageinDB == 1) SQL = "select * from messagetable order by idMessageTable DESC LIMIT 1";
         PreparedStatement preparedStatement = conn.prepareStatement(SQL);
         ResultSet resultSet = preparedStatement.executeQuery();

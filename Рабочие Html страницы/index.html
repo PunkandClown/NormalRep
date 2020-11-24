@@ -24,13 +24,16 @@
         
                 <div class="sub">
                     <button onclick="start()">Зарегестрироваться</button>
+                    <button onclick="login()">Уже есть аккаунт</button>
                 </div>    
         </div>
     </div>
 </body>
     <script>
         let xhr = new XMLHttpRequest();
-
+        function login(){
+            window.location.href = '/login';
+        }
         function start () {
             let name = document.getElementById('name').value;
             let NN = document.getElementById('NN').value;
