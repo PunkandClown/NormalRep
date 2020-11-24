@@ -12,9 +12,8 @@
 </body>
 <script>
     start();
-    function addPersonalMess(){
-        window.location.href = '/lschat';
-    }
+    let poster;
+    let recievier;
     function start () {
         let xhr = new XMLHttpRequest();
         let list = document.getElementById('subMes');
@@ -26,9 +25,14 @@
             console.log("Получаем")
             console.log(xhr.response)
             let user = JSON.parse(xhr.response);
+            poster = user.Poster;
+            recievier = user.Nickname;
             list.insertAdjacentHTML ("afterbegin", `<div>
         <h4>Nickname:${user.Nickname} name:${user.Name}</h4></div>`);
         }
+    }
+    function addPersonalMess(){
+        window.location.href = '/lschat?poster='+ poster + '&' + 'recievier=' + recievier;
     }
 </script>
 </html>

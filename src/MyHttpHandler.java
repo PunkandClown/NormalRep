@@ -17,6 +17,7 @@ public class MyHttpHandler implements HttpHandler {
     public static String login = "Рабочие Html страницы\\login.html";
     public static String  main = "Рабочие Html страницы\\main.html";
     public static String  users = "Рабочие Html страницы\\users.html";
+    public static String  lschat = "Рабочие Html страницы\\lschat.html";
     public static Map<Integer, Message> AllMessage = new HashMap<>();
     public static Connection conn;
     static {
@@ -69,6 +70,9 @@ public class MyHttpHandler implements HttpHandler {
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
+                break;
+            case "/lschat":
+                caseLschat(conn, httpExchange, requestMeth);
                 break;
             case "/allmessage":
                 try {
@@ -127,8 +131,16 @@ public class MyHttpHandler implements HttpHandler {
               handleResponse(httpExchange, users, 200);
         }else if("POST".equals(RequestMeth)){
             if(DBhelper.callRegister(conn, SB.toString())){
-                String postedUser = DBhelper.getUser(conn, SB.toString());
-                handleResponseForMessage(httpExchange, postedUser);
+                if(httpExchange.getRequestHeaders().containsKey("Cookie")) {
+                    String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
+                            .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
+                    if(HashmapClass.NickAndCookie.containsValue(cookieInBrowser)) {
+                        String poster = HashmapClass.getKeyByValue(HashmapClass.NickAndCookie, cookieInBrowser);
+                        String postedUser = DBhelper.getUser(conn, SB.toString(), poster);
+                        handleResponseForMessage(httpExchange, postedUser);
+                    }
+                }
+
             }
         }
     }
@@ -174,7 +186,6 @@ public class MyHttpHandler implements HttpHandler {
     }
     public static void caseMain(HttpExchange httpExchange, String RequestMete, String date) throws IOException, SQLException {
         if(httpExchange.getRequestHeaders().containsKey("Cookie")) {
-            List<String> id = httpExchange.getRequestHeaders().get("id");
             String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
                     .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
             if(HashmapClass.NickAndCookie.containsValue(cookieInBrowser)) {
@@ -203,6 +214,18 @@ public class MyHttpHandler implements HttpHandler {
             }
         } else {
             handleResponse(httpExchange, login, 200);
+        }
+    }
+    public static void caseLschat(Connection conn, HttpExchange httpExchange, String RequestMete) throws IOException {
+        if ("GET".equals(RequestMete)) {
+            String query = httpExchange.getRequestURI().getQuery();
+            System.out.println(query);
+            handleResponse(httpExchange, lschat, 200);
+        } else if ("POST".equals(RequestMete)) {
+            StringBuilder SBB = new StringBuilder();
+            SBB.append(BufferInGetRequestBody(httpExchange));
+            if(!SBB.toString().equals("")){
+            }
         }
     }
 

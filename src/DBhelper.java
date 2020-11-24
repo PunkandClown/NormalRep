@@ -23,13 +23,14 @@ class DBhelper {
     public static boolean LoginTrueFalse(Connection conn, String Nickname, String Password) throws SQLException{
         return callLogin(conn, Nickname, Password);
     }
-    static String getUser(Connection conn, String nicknameUserForInfo) throws SQLException {
+    static String getUser(Connection conn, String nicknameUserForInfo, String poster) throws SQLException {
         PreparedStatement preparedStatement = conn.prepareStatement("select * from users where Nickname = ?");
         preparedStatement.setString(1, nicknameUserForInfo);
         ResultSet resultSet = preparedStatement.executeQuery();
         StringBuilder SB = new StringBuilder();
         while (resultSet.next()) {
             SB.append("{\n");
+            SB.append("\"Poster\":" + "\"" + poster + "\"" + ",\n");
             SB.append("\"Nickname\":" + "\"" + resultSet.getString("Nickname") + "\"" + ",\n");
             SB.append("\"Name\":" + "\"" + resultSet.getString("Name") + "\"" + "\n");
             SB.append("}");
@@ -66,7 +67,7 @@ class DBhelper {
     static String getAllMessage(Connection conn, int idMessageinDB) throws SQLException {
         String SQL = "";
         if(idMessageinDB == 2){
-            SQL = "select * from messageTable DESC LIMIT 15";
+            SQL = "SELECT * FROM (SELECT * FROM messagetable ORDER BY idMessageTable DESC LIMIT 10) t ORDER BY idMessageTable;";
         } else if(idMessageinDB == 1) SQL = "select * from messagetable order by idMessageTable DESC LIMIT 1";
         PreparedStatement preparedStatement = conn.prepareStatement(SQL);
         ResultSet resultSet = preparedStatement.executeQuery();
