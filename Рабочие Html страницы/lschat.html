@@ -2,9 +2,167 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
 </head>
+<style>
+    body{
+        height: auto;
+        width: 800px;
+        background-color: #292929;
+    }
+    .leftpanel{
+        float: left;
+        min-width: 200px;
+        height: 631px;
+        background-color: #454545;
+        border: #454545 2px solid;
+    }
+    .shrift{
+        color: aliceblue;
+        font-family: fantasy;
+        font-size: 30px;
+        margin-left: 15px;
+    }
+    .chatheader{
+        float: left;
+        height: 80px;
+        width: 590px;
+        margin-bottom: 10px;
+        background-color: #131313;
+        border: #131313 2px solid;
+    }
+    .inpclass{
+        width: 483px;
+        margin-left: 13px;
+        margin-bottom: 10px;
+        border-radius: 2px;
+        background-color: #727272;
+    }
+    .bottmclass{
+        background-color: red;
+    }
+    .aaa{
+        text-decoration: none;
+        color: #131313;
+        margin-top: -10px;
+        margin-bottom: -10px;
+    }
+    .chatBox {
+        height: 400px;
+        width: 71%;
+        display: flex;
+        margin-top: 10px;
+        margin-left: 220px;
+        padding: 13px 5px;
+        background-color: #727272;
+        flex-direction: column-reverse;
+        overflow-y: scroll;
+    }
+    .message {
+        word-wrap: break-word;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        height: 25%;
+        max-height: 100%;
+        width: 50%;
+        height: auto;
+        display: flex;
+        flex-direction: column-reverse;
+        background-color: #999999;
+        padding: 1px 2px;
+        border: 1px solid #999999;
+        border-radius: 5px;
+    }
+
+    .mess-time {
+
+    }
+</style>
 <body>
-<p>dss</p>
+<div class="leftpanel">
+</div>
+<div class="chatheader"> <p class="shrift">LSChat</p> </div>
+<div id="subMes" class="chatBox">
+</div>
+<input type="text" id="messageInp" maxlength="199" class="inpclass"/>
+<button id="" onclick="addMess()" class="bottmclass">Отправить!</button>
+<div class="chatheader"> <p class="shrift">SHIFT</p> </div>
 </body>
+
+
+<script>
+    let key;
+    let content;
+    let list = document.getElementById('subMes');
+    let lasttime;
+    let lichkaURL = window.location.href;
+    console.log(lichkaURL);
+    window.onload = function addAllMessages() {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", lichkaURL + 'all');
+        xhr.onload = function () {
+            console.log(xhr.response);
+            let allMessages = JSON.parse(xhr.response);
+            console.log(allMessages);
+            for (key in allMessages) {
+                let date = new Date;
+                let Messagetime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                list.insertAdjacentHTML ("afterbegin", `<div class="message">
+                                                        <p>${allMessages[key].TextMessage}</p>
+                                                        <a href="http://10.1.0.48:1337/users?Nickname=${allMessages[key].Nickname}" class="aaa">Name:${allMessages[key].Nickname}</a>
+                                                        <p class="mess-time">time:${Messagetime}</p>
+                                                         </div>`);
+                console.log(list);
+                lasttime = allMessages[key].Time;
+            }
+        }
+        xhr.send();
+    }
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Enter') {
+            addMess();
+        }
+    });
+    function addMess() {
+        let message = document.getElementById('messageInp').value;
+        console.log(message);
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', lichkaURL);
+        xhr.send(message);
+        document.getElementById('messageInp').value = "";
+    }
+    function openChanal() {
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', lichkaURL);
+        xhr.onload = function () {
+            console.log(xhr.response);
+            content = JSON.parse(xhr.responseText);
+            console.log(content);
+            if (typeof content == "object") {
+                for (key in content) {
+                    let nowdate;
+                    nowdate = content[key].Time
+                    if (nowdate <= lasttime) {
+                    } else {
+                        console.log('acces');
+                        let date = new Date;
+                        let Messagetime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                        list.insertAdjacentHTML("afterbegin", `
+                                    <div class="message"><p>${content[key].TextMessage}</p>
+                                    <a href="http://10.1.0.48:1337/users?Nickname=${content[key].Nickname}" class="aaa"> Name:${content[key].Nickname}</a>
+                                    <p class="mess-time">time:${Messagetime}</p>
+                                    </div>`);
+                        lasttime = nowdate;
+                        lasttime = content[key].Time;
+                        console.log(list);
+                    }
+                }
+            }
+
+        }
+        xhr.send();
+    }
+    setInterval(openChanal, 600);
+</script>
 </html>

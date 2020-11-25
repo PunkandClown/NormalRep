@@ -14,6 +14,7 @@ public class HttpServer2 {
         server.createContext("/allmessage", new  MyHttpHandler());
         server.createContext("/users", new MyHttpHandler());
         server.createContext("/lschat", new MyHttpHandler());
+        server.createContext("/", new MyHttpHandler());
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
         server.setExecutor(threadPoolExecutor);
         server.start();

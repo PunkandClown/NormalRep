@@ -7,7 +7,7 @@
 </head>
 <style>
     body{
-        height: 1200px;
+        height: auto;
         width: 800px;
         background-color: #292929;
     }
@@ -63,15 +63,20 @@
         word-wrap: break-word;
         margin-top: 5px;
         margin-bottom: 5px;
-        min-height: 25%;
-        max-height: 40%;
+        height: 25%;
+        max-height: 100%;
         width: 50%;
+        height: auto;
         display: flex;
         flex-direction: column-reverse;
         background-color: #999999;
         padding: 1px 2px;
         border: 1px solid #999999;
         border-radius: 5px;
+    }
+
+    .mess-time {
+
     }
 </style>
 <body>
@@ -80,7 +85,7 @@
 <div class="chatheader"> <p class="shrift">GroupChat</p> </div>
 <div id="subMes" class="chatBox">
 </div>
-<input type="text" id="messageInp" class="inpclass"/>
+<input type="text" id="messageInp" maxlength="199" class="inpclass"/>
 <button id="" onclick="addMess()" class="bottmclass">Отправить!</button>
 <div class="chatheader"> <p class="shrift">Kirillgay</p> </div>
 </body>
@@ -99,10 +104,12 @@
             let allMessages = JSON.parse(xhr.response);
             console.log(allMessages);
             for (key in allMessages) {
+                let date = new Date;
+                let Messagetime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                 list.insertAdjacentHTML ("afterbegin", `<div class="message">
                                                         <p>${allMessages[key].TextMessage}</p>
                                                         <a href="http://10.1.0.48:1337/users?Nickname=${allMessages[key].Nickname}" class="aaa">Name:${allMessages[key].Nickname}</a>
-                                                        <h4>time: ${allMessages[key].Time}</h4>
+                                                        <p class="mess-time">time:${Messagetime}</p>
                                                          </div>`);
                 console.log(list);
                 lasttime = allMessages[key].Time;
@@ -110,35 +117,42 @@
         }
         xhr.send();
     }
+    document.addEventListener('keydown', function(event) {
+        if (event.code == 'Enter') {
+            addMess();
+        }
+    });
     function addMess() {
         let message = document.getElementById('messageInp').value;
         console.log(message);
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '/main');
         xhr.send(message);
+        document.getElementById('messageInp').value = "";
     }
     function openChanal() {
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/main', true);
+        xhr.open('POST', '/main');
         xhr.onload = function () {
-            content = JSON.parse(xhr.response);
+            console.log(xhr.response);
+            content = JSON.parse(xhr.responseText);
+            console.log(content);
             if (typeof content == "object") {
                 for (key in content) {
-                    console.log(lasttime);
                     let nowdate;
                     nowdate = content[key].Time
-                    console.log(nowdate)
-                    console.log(nowdate > lasttime)
                     if (nowdate <= lasttime) {
                     } else {
-                        console.log('acces')
-                        lasttime = nowdate;
+                        console.log('acces');
+                        let date = new Date;
+                        let Messagetime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                         list.insertAdjacentHTML("afterbegin", `
                                     <div class="message"><p>${content[key].TextMessage}</p>
                                     <a href="http://10.1.0.48:1337/users?Nickname=${content[key].Nickname}" class="aaa"> Name:${content[key].Nickname}</a>
-                                    <h4>time:${content[key].Time}</h4>
+                                    <p class="mess-time">time:${Messagetime}</p>
                                     </div>`);
-                        lastTime = content[key].Time;
+                        lasttime = nowdate;
+                        lasttime = content[key].Time;
                         console.log(list);
                     }
                 }
@@ -147,7 +161,6 @@
         }
         xhr.send();
     }
-
-    setInterval(openChanal, 1000);
+    setInterval(openChanal, 600);
 </script>
 </html>

@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 
 
@@ -33,10 +33,9 @@ public class MyHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         System.getProperty("mk.dir");
-        LocalDateTime localitytime = LocalDateTime.now();
         String url = httpExchange.getHttpContext().getPath();
         String requestMeth = httpExchange.getRequestMethod();
-        String date = localitytime.getHour() + ":" + localitytime.getMinute() + ":" +localitytime.getSecond();
+        String unixtime = String.valueOf(Instant.now().getEpochSecond());
         switch (url){
             case "/text":
                 if ("GET".equals(requestMeth)) {
@@ -54,7 +53,7 @@ public class MyHttpHandler implements HttpHandler {
                 break;
             case "/main":
                 try {
-                    caseMain(httpExchange, requestMeth, date);
+                    caseMain(httpExchange, requestMeth, unixtime);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -72,17 +71,20 @@ public class MyHttpHandler implements HttpHandler {
                 }
                 break;
             case "/lschat":
-                caseLschat(conn, httpExchange, requestMeth);
-                break;
-            case "/allmessage":
                 try {
-                    handleResponseForMessage(httpExchange, DBhelper.getAllMessage(conn,2));
+                    caseLschat(conn, httpExchange, requestMeth, unixtime);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
                 break;
-            default:
-                System.out.println("Дефолт");
+            case "/allmessage":
+                try {
+                    handleResponseForMessage(httpExchange, DBhelper.getAllOrOneMessage(conn,2));
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                break;
+            case "/":
                 handleResponse(httpExchange, index, 200);
                 break;
         }
@@ -95,7 +97,6 @@ public class MyHttpHandler implements HttpHandler {
         conn = DriverManager.getConnection(url, usernameConnection, passwordConnection);
         return conn;
     }
-
     public static void handleCssResponse(HttpExchange httpExchange, String index, int codeHeader)  throws IOException {
         httpExchange.getResponseHeaders().put("Content-Type", Collections.singletonList("text/css; charset=windows-1251"));
         byte[] arrayss = Files.readAllBytes(Paths.get(index));
@@ -184,47 +185,68 @@ public class MyHttpHandler implements HttpHandler {
         httpExchange.sendResponseHeaders(Integer.parseInt(code), arrayss.length);
         handleOutputStream(httpExchange,arrayss);
     }
-    public static void caseMain(HttpExchange httpExchange, String RequestMete, String date) throws IOException, SQLException {
+    public static boolean trueSystemCookie(HttpExchange httpExchange){
         if(httpExchange.getRequestHeaders().containsKey("Cookie")) {
             String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
                     .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
-            if(HashmapClass.NickAndCookie.containsValue(cookieInBrowser)) {
+            return HashmapClass.NickAndCookie.containsValue(cookieInBrowser);
+        }
+        return false;
+    }
+    public static String NicknameCookie(HttpExchange httpExchange){
+        if(httpExchange.getRequestHeaders().containsKey("Cookie")) {
+            String cookieInBrowser = httpExchange.getRequestHeaders().get("Cookie").toString()
+                    .replaceAll("session=", "").replaceAll("[\\[\\]]", "");
+            return HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
+                    cookieInBrowser);
+        }
+        return null;
+    }
+    public static void caseMain(HttpExchange httpExchange, String RequestMete, String unixtime) throws IOException, SQLException {
+            if(trueSystemCookie(httpExchange)){
                 if ("GET".equals(RequestMete)) {
                     handleResponse(httpExchange, main, 200);
                 } else if ("POST".equals(RequestMete)) {
                     StringBuilder SBB = new StringBuilder();
                     SBB.append(BufferInGetRequestBody(httpExchange));
-                    if(!SBB.toString().equals("")){
-                        DBhelper.putMessage(conn,HashmapClass.getKeyByValue(HashmapClass.NickAndCookie,
-                                cookieInBrowser), date, SBB.toString());
-                        handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
-                        //primeMessagekey++;
-                        System.out.println(DBhelper.getAllMessage(conn,1));
+                    if (primeMessagekey > timeMessagekey) {
+                        System.out.println(primeMessagekey+ " " + timeMessagekey);
+                        handleResponseForMessage(httpExchange,DBhelper.getAllOrOneMessage(conn,1));
+                        primeMessagekey = timeMessagekey;
                     }
-//                    if (primeMessagekey > timeMessagekey) {
-//                        primeMessagekey = timeMessagekey;
-//                        handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
-//                    }
-//                    String timelastmessagejson = "{"+"\"Time\":" + "\"" + DBhelper.getTimelastMessage(conn) + "\""+"}";
-//                    handleResponseForMessage(httpExchange, timelastmessagejson);
-                    System.out.println(DBhelper.getAllMessage(conn,1));
-                    handleResponseForMessage(httpExchange,DBhelper.getAllMessage(conn,1));
-                    //handleResponseForMessage(httpExchange, SBAllMessageJson(AllMessage, 1));
+                    if(!SBB.toString().equals("")){
+                        DBhelper.putMessage(conn, NicknameCookie(httpExchange), unixtime, SBB.toString());
+                        primeMessagekey++;
+                    }
+                    handleResponseForMessage(httpExchange, "0");
                 }
             }
-        } else {
-            handleResponse(httpExchange, login, 200);
         }
-    }
-    public static void caseLschat(Connection conn, HttpExchange httpExchange, String RequestMete) throws IOException {
-        if ("GET".equals(RequestMete)) {
-            String query = httpExchange.getRequestURI().getQuery();
-            System.out.println(query);
-            handleResponse(httpExchange, lschat, 200);
-        } else if ("POST".equals(RequestMete)) {
-            StringBuilder SBB = new StringBuilder();
-            SBB.append(BufferInGetRequestBody(httpExchange));
-            if(!SBB.toString().equals("")){
+    public static void caseLschat(Connection conn, HttpExchange httpExchange, String RequestMete, String unixtime) throws IOException, SQLException {
+        String adressat = httpExchange.getRequestURI().getQuery().replaceAll("lshcat", "");
+        StringTokenizer stringTokenizer = new StringTokenizer(adressat, "\"");
+        String a = stringTokenizer.nextToken().replaceAll("=","");
+        String nameposter = stringTokenizer.nextToken();
+        String b = stringTokenizer.nextToken();
+        String recievier = stringTokenizer.nextToken();
+        String table = "ls" + nameposter + "to" + recievier;
+        System.out.println(table);
+        if(trueSystemCookie(httpExchange)){
+            if(NicknameCookie(httpExchange).equals(nameposter) || NicknameCookie(httpExchange).equals(recievier)) {
+                if ("GET".equals(RequestMete)) {
+                    if(adressat.contains("all")){
+                        handleResponseForMessage(httpExchange, DBhelper.getAllLsMessage(conn, table, 2));
+                    }
+                    handleResponse(httpExchange, lschat, 200);
+                } else if ("POST".equals(RequestMete)) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(BufferInGetRequestBody(httpExchange));
+
+                    if (!stringBuilder.toString().equals("")) {
+                        DBhelper.putLsMessage(conn, table, NicknameCookie(httpExchange), nameposter, unixtime, stringBuilder.toString());
+                    }
+                    DBhelper.getAllLsMessage(conn, table, 2);
+                }
             }
         }
     }
