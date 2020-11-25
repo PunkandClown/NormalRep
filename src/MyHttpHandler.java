@@ -229,7 +229,7 @@ public class MyHttpHandler implements HttpHandler {
         String nameposter = stringTokenizer.nextToken();
         String b = stringTokenizer.nextToken();
         String recievier = stringTokenizer.nextToken();
-        String table = "ls" + nameposter + "to" + recievier;
+        String table = "ls" + nameposter + recievier;
         System.out.println(table);
         if(trueSystemCookie(httpExchange)){
             if(NicknameCookie(httpExchange).equals(nameposter) || NicknameCookie(httpExchange).equals(recievier)) {
@@ -245,7 +245,8 @@ public class MyHttpHandler implements HttpHandler {
                     if (!stringBuilder.toString().equals("")) {
                         DBhelper.putLsMessage(conn, table, NicknameCookie(httpExchange), nameposter, unixtime, stringBuilder.toString());
                     }
-                    DBhelper.getAllLsMessage(conn, table, 2);
+                    handleResponseForMessage(httpExchange,DBhelper.getAllLsMessage(conn, table, 1));
+
                 }
             }
         }

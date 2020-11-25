@@ -102,13 +102,30 @@ class DBhelper {
         }
         PreparedStatement preparedStatement = conn.prepareStatement(SQL);
         ResultSet resultSet = preparedStatement.executeQuery();
-        return toJsonParser(resultSet);
+        return toJsonParserToLS(resultSet);
+    }
+    public static String toJsonParserToLS(ResultSet resultSet) throws SQLException {
+        StringBuilder BBB = new StringBuilder();
+        BBB.append("[\n");
+        while (resultSet.next()) {
+            BBB.append("{\n");
+            BBB.append("\"Poster\":" + "\"" + resultSet.getString("Poster") + "\"" + ",\n");
+            BBB.append("\"Recievier\":" + "\"" + resultSet.getString("Recievier") + "\"" + ",\n");
+            BBB.append("\"Time\":" + "\"" + resultSet.getString("Time") + "\"" + ",\n");
+            BBB.append("\"TextMessage\":" + "\"" + resultSet.getString("TextMessage") + "\"" + "\n");
+            BBB.append("},");
+        }
+        BBB.setLength(BBB.length() - 1);
+        BBB.append("\n");
+        BBB.append("]\n");
+        return BBB.toString();
     }
     public static void putLsMessage(Connection conn, String table, String poster, String recievier,String Time, String textMessage) throws SQLException {
-        PreparedStatement preparedStatement = conn.prepareStatement("insert into ?(Poster, Recievier, Time, TextMessage) values(?,?,?,?)");
-        preparedStatement.setString(1,table);
-        preparedStatement.setString(2,poster);
-        preparedStatement.setString(3,recievier);
+        String SQL = String.format("insert into %s(Poster, Recievier, Time, TextMessage) values(?,?,?,?);",table);
+        PreparedStatement preparedStatement = conn.prepareStatement(SQL);
+        preparedStatement.setString(1,poster);
+        preparedStatement.setString(2,recievier);
+        preparedStatement.setString(3,Time);
         preparedStatement.setString(4,textMessage);
         preparedStatement.execute();
     }

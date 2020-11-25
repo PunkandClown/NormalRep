@@ -96,11 +96,11 @@
     let content;
     let list = document.getElementById('subMes');
     let lasttime;
-    let lichkaURL = window.location.href;
+    let lichkaURL = decodeURI(window.document.location.href);
     console.log(lichkaURL);
     window.onload = function addAllMessages() {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", lichkaURL + 'all');
+        xhr.open("GET", decodeURI(window.document.location.href) + 'all');
         xhr.onload = function () {
             console.log(xhr.response);
             let allMessages = JSON.parse(xhr.response);
@@ -110,7 +110,7 @@
                 let Messagetime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                 list.insertAdjacentHTML ("afterbegin", `<div class="message">
                                                         <p>${allMessages[key].TextMessage}</p>
-                                                        <a href="http://10.1.0.48:1337/users?Nickname=${allMessages[key].Nickname}" class="aaa">Name:${allMessages[key].Nickname}</a>
+                                                        <a href="http://10.1.0.48:1337/users?Nickname=${allMessages[key].Poster}" class="aaa">Name:${allMessages[key].Poster}</a>
                                                         <p class="mess-time">time:${Messagetime}</p>
                                                          </div>`);
                 console.log(list);
@@ -134,7 +134,7 @@
     }
     function openChanal() {
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', lichkaURL);
+        xhr.open('POST', decodeURI(window.document.location.href));
         xhr.onload = function () {
             console.log(xhr.response);
             content = JSON.parse(xhr.responseText);
@@ -150,7 +150,7 @@
                         let Messagetime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                         list.insertAdjacentHTML("afterbegin", `
                                     <div class="message"><p>${content[key].TextMessage}</p>
-                                    <a href="http://10.1.0.48:1337/users?Nickname=${content[key].Nickname}" class="aaa"> Name:${content[key].Nickname}</a>
+                                    <a href="http://10.1.0.48:1337/users?Nickname=${content[key].Poster}" class="aaa"> Name:${content[key].Poster}</a>
                                     <p class="mess-time">time:${Messagetime}</p>
                                     </div>`);
                         lasttime = nowdate;
@@ -163,6 +163,6 @@
         }
         xhr.send();
     }
-    setInterval(openChanal, 600);
+    setInterval(openChanal, 1000);
 </script>
 </html>
