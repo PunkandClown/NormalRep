@@ -15,3 +15,7 @@ html,
     .sub {
         margin-left: 19px;
     }
+
+body {
+   margin: 0;
+}
